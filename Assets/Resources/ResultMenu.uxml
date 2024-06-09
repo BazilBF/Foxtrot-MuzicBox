@@ -1,0 +1,63 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="VisualElement" style="flex-grow: 1; width: 80%; height: 80%; position: absolute; margin-left: 0; margin-top: 0; background-color: rgb(65, 65, 65); margin-right: 0; margin-bottom: 0; left: 10%; top: 10%;">
+        <ui:VisualElement style="flex-grow: 1; height: 15%; padding-left: 10%; justify-content: flex-start; flex-direction: row; align-items: center;">
+            <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PlayResultLabel" />
+            <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TryCountLabel" style="white-space: normal;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; height: 70%; align-self: stretch; padding-left: 2%; padding-right: 2%; padding-top: 2%; padding-bottom: 2%; flex-direction: row;">
+            <ui:VisualElement style="flex-grow: 1; width: 70%; align-self: stretch;">
+                <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-direction: row; justify-content: space-between;">
+                    <ui:Label tabindex="-1" text="S Marks" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                    <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Mark0" />
+                </ui:VisualElement>
+                <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-direction: row; justify-content: space-between;">
+                    <ui:Label tabindex="-1" text="A Marks" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                    <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Mark1" />
+                </ui:VisualElement>
+                <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-direction: row; justify-content: space-between;">
+                    <ui:Label tabindex="-1" text="B Marks" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                    <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Mark2" />
+                </ui:VisualElement>
+                <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-direction: row; justify-content: space-between;">
+                    <ui:Label tabindex="-1" text="C Marks" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                    <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Mark3" />
+                </ui:VisualElement>
+                <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-direction: row; justify-content: space-between;">
+                    <ui:Label tabindex="-1" text="D Marks" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                    <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Mark4" />
+                </ui:VisualElement>
+                <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-direction: row; justify-content: space-between;">
+                    <ui:Label tabindex="-1" text="E Marks" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                    <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Mark5" />
+                </ui:VisualElement>
+                <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-direction: row; justify-content: space-between;">
+                    <ui:Label tabindex="-1" text="Notes Count" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                    <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TotalNotes" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-grow: 1; width: 30%;">
+                <ui:VisualElement style="flex-grow: 1; align-self: stretch; justify-content: center; height: 60%;">
+                    <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LevelMark" style="-unity-text-align: upper-center;" />
+                    <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LevelScore" style="-unity-text-align: upper-center; white-space: nowrap;" />
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-grow: 1; height: 10%; align-items: flex-start; justify-content: flex-end; flex-direction: column-reverse;">
+                    <ui:Label tabindex="-1" text="Combo stats" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="-unity-text-align: lower-left;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="VisualElement" style="flex-grow: 1; height: 30%; padding-left: 2%; padding-right: 2%; padding-top: 2%; padding-bottom: 2%;">
+                    <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-direction: row; justify-content: space-between; height: 50%;">
+                        <ui:Label tabindex="-1" text="Count" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-text-align: middle-left; white-space: normal;" />
+                        <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ComboCntLabel" style="-unity-text-align: middle-left;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement style="flex-grow: 1; flex-direction: row; justify-content: space-between; height: 50%;">
+                        <ui:Label tabindex="-1" text="Max" parse-escape-sequences="true" display-tooltip-when-elided="true" style="white-space: normal;" />
+                        <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ComboLgthLabel" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; height: 15%; flex-direction: row; justify-content: space-between; padding-left: 10%; padding-right: 10%; padding-top: 1%; padding-bottom: 1%;">
+            <ui:Button text="Go to menu" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ReturnBtn" />
+            <ui:Button text="Retry" parse-escape-sequences="true" display-tooltip-when-elided="true" name="RetryBtn" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

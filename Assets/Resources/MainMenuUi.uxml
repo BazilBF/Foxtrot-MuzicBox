@@ -1,0 +1,45 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1;">
+        <ui:VisualElement name="VisualElement" style="flex-grow: 1; height: 10%; flex-direction: row; justify-content: space-between;">
+            <ui:Button text="Stats" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StatsButton" />
+            <ui:Button text="Settings" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SettingsButton" />
+        </ui:VisualElement>
+        <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="AlwaysVisible" name="ChooseLevel" style="height: 90%;" />
+        <ui:VisualElement name="LoadLevel" style="flex-grow: 1; position: absolute; width: 100%; height: 100%; background-color: rgba(94, 94, 94, 0.6); margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; display: none;">
+            <ui:VisualElement name="VisualElement" style="flex-grow: 1; width: 20%; height: 10%; position: absolute; margin-left: 40%; margin-top: 25%; background-color: rgba(0, 0, 0, 0.48); display: flex;">
+                <ui:Label tabindex="-1" text="Loading" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-text-align: upper-center; border-left-color: rgba(255, 255, 255, 0); border-right-color: rgba(255, 255, 255, 0); border-top-color: rgba(255, 255, 255, 0); border-bottom-color: rgba(255, 255, 255, 0); color: rgb(255, 255, 255);" />
+                <ui:ProgressBar value="22" name="LoadProgressBar" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="StartLevelMenu" style="flex-grow: 1; position: absolute; width: 100%; height: 100%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; background-color: rgba(94, 94, 94, 0.6); padding-left: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; display: flex;">
+            <ui:VisualElement style="flex-grow: 1; width: 80%; height: 80%; margin-left: 10%; margin-top: 5%; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; background-color: rgb(65, 65, 65); border-top-left-radius: 10px; border-bottom-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; position: absolute;">
+                <ui:VisualElement style="flex-grow: 1; flex-direction: row; border-bottom-width: 1px; border-bottom-color: rgb(0, 0, 0); justify-content: space-between;">
+                    <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LevelName" style="border-bottom-width: 0; border-bottom-color: rgb(0, 0, 0); border-left-width: 0; border-right-width: 0; border-top-width: 0;" />
+                    <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LevelGoal" />
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-grow: 1;">
+                    <ui:VisualElement style="flex-grow: 1; flex-direction: column;">
+                        <ui:VisualElement style="flex-grow: 1; height: 50%; border-bottom-width: 1px; border-bottom-color: rgb(0, 0, 0);">
+                            <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LevelDesc" style="height: auto; border-bottom-width: 0; border-left-color: rgba(56, 56, 56, 0); border-right-color: rgba(56, 56, 56, 0); border-top-color: rgba(56, 56, 56, 0); border-bottom-color: rgb(56, 56, 56); border-left-width: 0; border-right-width: 0; border-top-width: 0;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-direction: row; height: 50%; border-bottom-width: 1px; border-bottom-color: rgb(0, 0, 0);">
+                            <ui:VisualElement style="flex-grow: 1; flex-direction: column; justify-content: space-between;">
+                                <ui:Label tabindex="-1" text="Wins/Plays" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StatsLabel" style="width: auto; height: 50%;" />
+                                <ui:Label tabindex="-1" text="Best Score:" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ScoreLabel" style="height: 50%;" />
+                            </ui:VisualElement>
+                            <ui:VisualElement style="flex-grow: 1; align-self: auto; flex-direction: column;">
+                                <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StatsValue" style="height: 50%;" />
+                                <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ScoreValue" style="height: 50%;" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-grow: 1;">
+                    <ui:RadioButtonGroup label="Difficulty" value="-1" choices="Easy,Medium,Hart" name="DifficultyRadioGroup" />
+                    <ui:Button text="Start" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StartBtn" enable-rich-text="true" />
+                    <ui:Button text="Back" parse-escape-sequences="true" display-tooltip-when-elided="true" name="BackBtn" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
