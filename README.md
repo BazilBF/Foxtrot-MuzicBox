@@ -1,6 +1,6 @@
 Both PC and Android game Unity3d-based guitar hero-like game but, with a twist - music stored in text files in JSON and generated on fly during playing session. This approach allows more direct control on music.
 
-Current stage of development: implementation of saving user progress and statistics 
+Current stage of development: implementation of saving user progress and statistics and UI (this stil unstable)
 
 Implemented features:
 - 4 simple synth instruments (saw, sin, square, pulse)
