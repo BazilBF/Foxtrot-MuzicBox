@@ -3,7 +3,11 @@ Both PC and Android game Unity3d-based guitar hero-like game but, with a twist -
 Current stage of development: implementation of saving user progress and statistics and UI (this stil unstable)
 
 Implemented features:
-- 4 simple synth instruments (saw, sin, square, pulse)
+- 4 simple synth instruments:
+  - saw,
+  - sin,
+  - square,
+  - pulse
 - loading music from text file, text file notation is close to classic music sheet's notation but in JSON (see Assets/StreamingAssets/SynthMusic/TestMusicLvL.json for example). 
   - each music composotion supports different parts (intro, Couplet, Chorus, Solo, Bridge, Outro).
   - each part in one composition could have several variant's
