@@ -23,5 +23,6 @@ Implemented features:
 Planned features:
 - more instruments
 - more game modes
+- story mode
 
 https://www.linkedin.com/in/bazilbf/
