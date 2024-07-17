@@ -148,21 +148,25 @@ public class Player
         return (tmpSettingsStr != Player.defaultSettings);
     }
 
-    public void LoadAvaibleLevelMetadata(string inPath) {
+    public void CheckAndLoadAvaibleLevelMetadata(string inPath) {
 
 
         string data = GameController.GetStreamedText($"{inPath}LevelList.json");
         LevelList levelListObj = JsonUtility.FromJson<LevelList>(data);
 
-        for (int i=0; i < levelListObj.levelDataFiles.Count; i++) {
-            string fileName = levelListObj.levelDataFiles[i];
-            data = GameController.GetStreamedText($"{inPath}{fileName}.json");
+        if (levelListObj.levelDataFiles.Count != this._currentDataToSave.levelMetadata.Count) {
+            //TODO: add proper processes - add in metadata levelID check that all levels are present in metadata
+            this._currentDataToSave.levelMetadata.Clear();
+            for (int i = 0; i < levelListObj.levelDataFiles.Count; i++) {
+                string fileName = levelListObj.levelDataFiles[i];
+                data = GameController.GetStreamedText($"{inPath}{fileName}.json");
 
-            LevelMetaData tmpLevelMetadata = JsonUtility.FromJson<LevelMetaData>(data);
-            tmpLevelMetadata.fileName = fileName;
-            this._currentDataToSave.levelMetadata.Add(tmpLevelMetadata);
+                LevelMetaData tmpLevelMetadata = JsonUtility.FromJson<LevelMetaData>(data);
+                tmpLevelMetadata.fileName = fileName;
+                this._currentDataToSave.levelMetadata.Add(tmpLevelMetadata);
 
-            Debug.Log($"Level:{this._currentDataToSave.levelMetadata[i].name}");
+                Debug.Log($"Level:{this._currentDataToSave.levelMetadata[i].name}");
+            }
         }
     }
 

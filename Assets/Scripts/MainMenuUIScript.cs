@@ -19,7 +19,7 @@ public class MainMenuUIScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log("UiLoaded");
     }
 
     // Update is called once per frame

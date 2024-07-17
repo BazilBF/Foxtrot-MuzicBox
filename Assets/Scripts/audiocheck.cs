@@ -414,7 +414,7 @@ public class GameController : MonoBehaviour
         }
         else {
             this._activePlayer = new Player();
-            this._activePlayer.LoadAvaibleLevelMetadata(GameController.synthMusicFolder);
+            this._activePlayer.CheckAndLoadAvaibleLevelMetadata(GameController.synthMusicFolder);
             Debug.Log("New player");
         }
         this._currentPitchCoef = this._activePlayer.GetPitchCoef();

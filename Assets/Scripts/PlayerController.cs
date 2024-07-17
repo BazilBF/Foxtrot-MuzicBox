@@ -19,8 +19,9 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("PlayerLoaded");
         GameObject mainMenuUI = GameObject.FindGameObjectWithTag("GameController");
-        this._activePlayer.LoadAvaibleLevelMetadata(synthMusicFolder);
+        this._activePlayer.CheckAndLoadAvaibleLevelMetadata(synthMusicFolder);
 
         mainMenuUI.SendMessage("InititMainMenu", this._activePlayer);
 
