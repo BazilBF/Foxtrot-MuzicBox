@@ -29,6 +29,6 @@ Planned features:
 - more game modes
 - story mode
 
-example of fail gameplay https://youtu.be/BXhWQPKjPS0
+example of fail gameplay [https://youtu.be/BXhWQPKjPS0](https://youtu.be/mY554DiK4KY)
 
-example of almost win (all goals are cleared until music ends all notes are become a bonus ones) and both skills https://youtu.be/XfphIf8lTNo
+example of almost win (all goals are cleared until music ends all notes are become a bonus ones) and both skills [https://youtu.be/nEDgIFQN1dk](https://youtu.be/nEDgIFQN1dk)
