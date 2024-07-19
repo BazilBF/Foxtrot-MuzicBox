@@ -29,4 +29,5 @@ Planned features:
 - more game modes
 - story mode
 
-https://www.linkedin.com/in/bazilbf/
+example of fail gameplay https://youtu.be/BXhWQPKjPS0
+example of almost win (all goals are cleared until music ends all notes are become a bonus ones) and both skills https://youtu.be/XfphIf8lTNo
