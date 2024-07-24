@@ -409,6 +409,8 @@ public class GameController : MonoBehaviour
         if (playerObject != null) {
             PlayerController playerController = playerObject.GetComponent<PlayerController>();
             this._activePlayer = playerController.GetActivePlayer();
+            this._activePlayer.SetPitchCoef(this._pitchCoef);
+            this._activePlayer.SetSpeedCoef(this._speedCoef);
             this._activePlayer.UpdateSkills();
             Debug.Log("Found player");
         }
@@ -419,9 +421,7 @@ public class GameController : MonoBehaviour
         }
         this._currentPitchCoef = this._activePlayer.GetPitchCoef();
         this._currentSpeedCoef = this._activePlayer.GetGameSpeedCoef();
-        this._pitchCoef = this._currentPitchCoef;
-        this._speedCoef = this._currentSpeedCoef;
-        
+     
 
     }
 

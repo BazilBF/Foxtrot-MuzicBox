@@ -83,6 +83,7 @@
     <Compile Include="Assets\Scripts\MainMenuUIScript.cs" />
     <Compile Include="Assets\Scripts\AudioGenerator\MusicBox.cs" />
     <Compile Include="Assets\Scripts\GameControl\GameData.cs" />
+    <Compile Include="Assets\Scripts\MainMenuScript.cs" />
     <Compile Include="Assets\Scripts\audiocheck.cs" />
     <Compile Include="Assets\Scripts\GameControl\Skills\Lullaby.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />

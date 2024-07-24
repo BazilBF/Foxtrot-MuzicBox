@@ -8,7 +8,7 @@ public class ResultScreenUiScript : MonoBehaviour
 {
     private Player _activePlayer;
     private readonly static int _mainMenuSceneId = 0;
-    private readonly static int _levelScene = 2;
+    private readonly static int _levelScene = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -117,7 +117,7 @@ public class ResultScreenUiScript : MonoBehaviour
             returnBtn.RegisterCallback<ClickEvent>(OnReturnBtnClick);
 
             Button retryBtn = uiDocument.rootVisualElement.Query<Button>("RetryBtn");
-            returnBtn.RegisterCallback<ClickEvent>(OnRetryBtnClick);
+            retryBtn.RegisterCallback<ClickEvent>(OnRetryBtnClick);
         }
 
         

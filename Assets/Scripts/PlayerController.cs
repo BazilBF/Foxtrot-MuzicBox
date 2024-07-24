@@ -20,10 +20,10 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         Debug.Log("PlayerLoaded");
-        GameObject mainMenuUI = GameObject.FindGameObjectWithTag("GameController");
+        
         this._activePlayer.CheckAndLoadAvaibleLevelMetadata(synthMusicFolder);
 
-        mainMenuUI.SendMessage("InititMainMenu", this._activePlayer);
+        
 
         
     }
