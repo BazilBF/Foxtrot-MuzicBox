@@ -3,7 +3,7 @@ Both PC and Android game Unity3d-based guitar hero-like game but, with a twist -
 Current stage of development: implementation of saving user progress and statistics and UI (this stil unstable)
 
 Implemented features:
-- 4 simple synth instruments:
+- 4 simple synth instruments (see Foxtrot-MuzicBox/Assets/Scripts/AudioGenerator):
   - saw,
   - sin,
   - square,
@@ -28,6 +28,8 @@ Planned features:
 - more instruments
 - more game modes
 - story mode
+
+
 
 example of fail gameplay [https://youtu.be/BXhWQPKjPS0](https://youtu.be/mY554DiK4KY)
 
