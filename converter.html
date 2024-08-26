@@ -1,0 +1,249 @@
+<html>
+	<head>
+		<script>
+			var noteLengths = {
+				"whole":1,
+				"half":2,
+				"quarter":4,
+				"eighth":8,
+				"16th":16,
+				"32nd":32
+			};
+			
+			function Convert(){
+				var musicSourceTextArea = document.getElementById("MusicSource");
+				var resultAreaDiv = document.getElementById("ResultArea");
+				
+				var parser = new DOMParser();
+				var xmlDoc = parser.parseFromString(musicSourceTextArea.value, "text/xml");
+				
+				var scorePartElements = xmlDoc.getElementsByTagName("score-part");
+				
+				var startMeasure = document.getElementById("Start").value;
+				var endMeasure = document.getElementById("End").value;
+				
+				var instruments = {};
+				
+				for(var i=0; i<scorePartElements.length; i++){
+					var scorePart = scorePartElements[i];
+					var instrument = scorePart.getElementsByTagName("part-name")[0].childNodes[0].nodeValue;
+					var instrumentType = scorePart.getElementsByTagName("part-abbreviation")[0].childNodes[0].nodeValue;
+					instruments[scorePart.id]={
+						"instrument":instrument,
+						"instrumentType":instrumentType,
+						"id":scorePart.id
+					};
+				}
+				
+				
+				
+				
+				
+				var partElements = xmlDoc.getElementsByTagName("part");
+				
+				var staffParts = {};
+				var measure = 0;
+				var length = 0;
+				
+				for(var i=0; i<partElements.length; i++){
+					var part = partElements[i];
+					staffParts[instruments[part.id].instrument]={};
+					
+					staffParts[instruments[part.id].instrument].staffs={};
+					staffParts[instruments[part.id].instrument].staffs[instruments[part.id].instrument+"-Main"]=[];
+					staffParts[instruments[part.id].instrument].staffs[instruments[part.id].instrument+"-Main"][0]={note:"staf 1",notes:[]};
+					staffParts[instruments[part.id].instrument].staffs[instruments[part.id].instrument+"-Main"][1]={note:"staf 2",notes:[]};
+					
+					var measureElements = part.getElementsByTagName("measure");
+					if(measure == 0 && length == 0){
+						var time = measureElements[0].getElementsByTagName("time");
+						measure = Number(time[0].getElementsByTagName("beats")[0].childNodes[0].nodeValue);
+						length = Number(time[0].getElementsByTagName("beat-type")[0].childNodes[0].nodeValue);
+					}
+					var bars = 0;
+					var beats = [0,0];
+					var beats32s = [0,0];
+					
+					var lastBars = [0,0];
+					var lastBeats = [0,0];
+					var lastBeats32s = [0,0];
+					
+					var beat32PerBeat = 32/length;
+					
+					for(var y=startMeasure-1; y < endMeasure-1; y++){
+						
+						bars++;
+						
+						var noteElements = measureElements[y].getElementsByTagName("note");
+						var sharpNotesInMeasure = [];
+						
+						var chordStaff = 0;
+						
+
+						
+						beats = [1,1];
+						beats32s = [1,1];
+						
+						for (var z = 0; z < noteElements.length; z++){
+							
+							
+							var currentNote = noteElements[z];
+							var pitchElements = currentNote.getElementsByTagName("pitch");
+							var unpitchedElements = currentNote.getElementsByTagName("unpitched");
+							var staffElements = currentNote.getElementsByTagName("staff");
+
+							var typeElements = currentNote.getElementsByTagName("type");
+							
+							var activeStaff = 0;
+							
+							if(typeElements.length == 0){
+								continue;
+							}
+							
+							if(staffElements.length >0 ){
+								activeStaff = staffElements[0].childNodes[0].nodeValue-1;
+							}
+							
+							var noteLength = typeElements[0].childNodes[0].nodeValue;
+							
+							var targetLength = noteLengths[noteLength];
+							var targetMeasure = 1;
+							
+							var hasDot = currentNote.getElementsByTagName("dot").length>0;
+							if(hasDot){
+								targetMeasure+=0.5;
+							}
+							
+							var chordOpen = currentNote.getElementsByTagName("chord").length>0;
+							
+							var staffToAdd = staffParts[instruments[part.id].instrument].staffs[instruments[part.id].instrument+"-Main"][activeStaff];
+							
+							
+							
+							if(chordOpen){
+								chordStaff++;
+								if(!staffParts[instruments[part.id].instrument].staffs[instruments[part.id].instrument+"-Chord"+chordStaff]){
+									staffParts[instruments[part.id].instrument].staffs[instruments[part.id].instrument+"-Chord"+chordStaff] = [];									
+									staffParts[instruments[part.id].instrument].staffs[instruments[part.id].instrument+"-Chord"+chordStaff][0] = {note:"staf 1", notes:[]};
+									staffParts[instruments[part.id].instrument].staffs[instruments[part.id].instrument+"-Chord"+chordStaff][1] = {note:"staf 2",notes:[]};
+								}
+								
+								staffToAdd = staffParts[instruments[part.id].instrument].staffs[instruments[part.id].instrument+"-Chord"+chordStaff][activeStaff];
+							}
+							else
+							{
+								chordStaff = 0;
+							}
+							
+							var startSharp = currentNote.getElementsByTagName("accidental").length>0 && currentNote.getElementsByTagName("accidental")[0].childNodes[0].nodeValue == "sharp";
+							
+							
+							if(pitchElements.length>0){
+								var targetNote = pitchElements[0].getElementsByTagName("step")[0].childNodes[0].nodeValue;
+								var targetOctave = pitchElements[0].getElementsByTagName("octave")[0].childNodes[0].nodeValue;
+								
+								if(startSharp){
+									sharpNotesInMeasure[sharpNotesInMeasure.length] = targetNote;
+								}
+								
+								if(sharpNotesInMeasure.includes(targetNote)){
+									targetNote+="#";
+								}
+								
+								var targetNoteObj={
+									"bar" : (chordOpen ? lastBars : bars),
+									"beat" : (chordOpen ? lastBeats[activeStaff] : beats[activeStaff]),
+									"beat32" : (chordOpen ? lastBeats32s[activeStaff] : beats32s[activeStaff]),
+									"measure": targetMeasure,
+									"length" : targetLength,
+									"note": targetNote,
+									"octave": Number(targetOctave)									
+								};
+								
+								var insertIndex = staffToAdd.notes.length;
+								
+								staffToAdd.notes[insertIndex] = targetNoteObj;
+							}
+							
+							if(unpitchedElements.length>0){
+								var targetNote = unpitchedElements[0].getElementsByTagName("display-step")[0].childNodes[0].nodeValue;
+								var targetOctave = unpitchedElements[0].getElementsByTagName("display-octave")[0].childNodes[0].nodeValue;
+								
+								if(startSharp){
+									sharpNotesInMeasure[sharpNotesInMeasure.length] = targetNote;
+								}
+								
+								if(sharpNotesInMeasure.includes(targetNote)){
+									targetNote+="#";
+								}
+								
+								var targetNoteObj={
+									"bar" : (chordOpen ? lastBars : bars),
+									"beat" : (chordOpen ? lastBeats[activeStaff] : beats[activeStaff]),
+									"beat32" : (chordOpen ? lastBeats32s[activeStaff] : beats32s[activeStaff]),
+									"measure": targetMeasure,
+									"length" : targetLength,
+									"note": targetNote,
+									"octave": Number(targetOctave)									
+								};
+								
+								var insertIndex = staffToAdd.notes.length;
+								
+								staffToAdd.notes[insertIndex] = targetNoteObj;
+							}
+							
+							if(!chordOpen){
+							
+								lastBars = bars;
+								lastBeats[activeStaff] = beats[activeStaff];
+								lastBeats32s[activeStaff] = beats32s[activeStaff];
+								
+								var beat32sNoteLenght = targetMeasure * (32/targetLength);
+								var beat32sTotalLength = (bars * measure * 2 + beats[activeStaff]) * beat32PerBeat + beats32s[activeStaff] + beat32sNoteLenght;
+								
+								var beatsCount = Math.floor(beat32sTotalLength/beat32PerBeat);
+								beats32s[activeStaff] = beat32sTotalLength%beat32PerBeat;
+								
+								var barsCheck = beatsCount / (measure * 2);
+								beats[activeStaff] = beatsCount % (measure * 2);
+							}
+							
+							
+						}
+					}
+					
+					
+					
+					
+					
+				}
+				
+				resultAreaDiv.innerHTML = JSON.stringify(staffParts);
+				
+			}
+		</script>
+	</head>
+	<body>
+		<div>
+			<div>
+				<span>
+					Start
+					<input type="text" id="Start"/>
+				</span>
+				<span>/</span>
+				<span>
+					End
+					<input type="text" id="End"/>
+				</span>
+			</div>
+			<div>
+				<textarea id="MusicSource"></textarea>
+			</div>
+			<div>
+				<button label="Convert" id="ConvertBtn" onclick="Convert()">Convert</button>
+			</div>
+		</div>
+		<div id="ResultArea">
+		</div>
+	</body>
+</html>
