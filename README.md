@@ -1,14 +1,16 @@
 Both PC and Android game Unity3d-based guitar hero-like game but, with a twist - music stored in text files in JSON and generated on fly during playing session. This approach allows more direct control on music.
 
+Game logics scripts are located in Foxtrot-MuzicBox/Assets//Scripts
+
 Current stage of development: implementation of saving user progress and statistics and UI (this stil unstable)
 
 Implemented features:
-- 4 simple synth instruments (see Foxtrot-MuzicBox/Assets/Scripts/AudioGenerator):
+- 4 simple synth instruments (see /Foxtrot-MuzicBox/Assets/Scripts/AudioGenerator):
   - saw,
   - sin,
   - square,
   - pulse
-- loading music from text file, text file notation is close to classic music sheet's notation but in JSON (see Assets/StreamingAssets/SynthMusic/TestMusicLvL.json for example). 
+- loading music from text file, text file notation is close to classic music sheet's notation but in JSON (see /Foxtrot-MuzicBox/Assets/StreamingAssets/SynthMusic/TestMusicLvL.json for example). 
   - each music composotion supports different parts (intro, Couplet, Chorus, Solo, Bridge, Outro).
   - each part in one composition could have several variant's
   - each part can have several playable or unplayable intstrument tracks. different part can have different set of instruments.
