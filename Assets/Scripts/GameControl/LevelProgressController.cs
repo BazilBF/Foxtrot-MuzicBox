@@ -144,6 +144,7 @@ public class LevelProgressController
             }
         }
         else {
+            this._comboCount = 0;
             this._comboChains++;
             this._comboActive = true;
         }

@@ -42,39 +42,35 @@ public class ResultScreenUiScript : MonoBehaviour
 
             Label tryCountLabel = uiDocument.rootVisualElement.Query<Label>("TryCountLabel");
             string tryCountString;
+            string winCountPostfixStr;
 
-            int[] tryCount = this._activePlayer.GetLevelPlaysCnt(currentLevel);
-            int[] winCount = this._activePlayer.GetLevelWinsCnt(currentLevel);
+            int tryCount = this._activePlayer.GetLevelPlaysCnt(currentLevel)[currenDifficulty];
+            int winCount = this._activePlayer.GetLevelWinsCnt(currentLevel)[currenDifficulty];
 
-            string winCountStr;
-            switch (winCount[currenDifficulty]%10)
-            {
-                case 1: winCountStr = $"{winCount[currenDifficulty]}st"; break;
-                case 2: winCountStr = $"{winCount[currenDifficulty]}nd"; break;
-                case 3: winCountStr = $"{winCount[currenDifficulty]}rd"; break;
-                default: winCountStr = $"{winCount[currenDifficulty]}th"; break;
-            }
+            
 
             if (currentState == LevelGoal.LevelGoalState.Won)
             {
-                
-                
-                if (tryCount[currenDifficulty] == 1)
+
+                winCountPostfixStr = ResultScreenUiScript.GetStringPostfix(winCount);
+                if (tryCount == 1)
                 {
                     tryCountString = $"Success on the first try? O,..,o";
                 }
-                else if (tryCount[currenDifficulty] == winCount[currenDifficulty])
+                else if (tryCount == winCount)
                 {
-                    tryCountString = $"{winCount[currenDifficulty]} of {tryCount[currenDifficulty]}. Cheater or Beast -,..,-?";
+                    tryCountString = $"{winCount}{winCountPostfixStr} of {tryCount}. Cheater or Beast -,..,-?";
                 }
                 else
                 {
-                    tryCountString = $"The {winCountStr} success of {tryCount[currenDifficulty]}. ^,..,^";
+                    tryCountString = $"The {winCount}{winCountPostfixStr} success of {tryCount}. ^,..,^";
                 }
             }
             else
             {
-                tryCountString = $"It could be the {winCountStr} success of {tryCount[currenDifficulty]}. ^,..,-";
+                winCount++;
+                winCountPostfixStr = ResultScreenUiScript.GetStringPostfix(winCount);
+                tryCountString = $"It could be the {winCount}{winCountPostfixStr} success of {tryCount}. ^,..,-";
             }
             tryCountLabel.text = tryCountString;
 
@@ -88,7 +84,7 @@ public class ResultScreenUiScript : MonoBehaviour
             int notesCount = this._activePlayer.GetCurrentNoteCount();
             totalNotesLabel.text = notesCount.ToString();
 
-            Label LevelMarkLabel = uiDocument.rootVisualElement.Query<Label>("TotalNotes");
+            Label LevelMarkLabel = uiDocument.rootVisualElement.Query<Label>("LevelMark");
             int levelMark = this._activePlayer.GetCurrentLevelMark();
             string levelMarkStr;
             switch (levelMark) { 
@@ -111,7 +107,7 @@ public class ResultScreenUiScript : MonoBehaviour
 
             Label comboLgthLabel = uiDocument.rootVisualElement.Query<Label>("ComboLgthLabel");
             int maxComboLength = this._activePlayer.GetCurrentMaxComboLength();
-            LevelScoreLabel.text = levelScore.ToString();
+            comboLgthLabel.text = maxComboLength.ToString();
 
             Button returnBtn = uiDocument.rootVisualElement.Query<Button>("ReturnBtn");
             returnBtn.RegisterCallback<ClickEvent>(OnReturnBtnClick);
@@ -121,6 +117,25 @@ public class ResultScreenUiScript : MonoBehaviour
         }
 
         
+    }
+
+    private static string GetStringPostfix(int inWinCount) {
+        string winCountStr;
+        int checkWinCount = inWinCount % 100;
+        if (checkWinCount == 11 || checkWinCount == 12 || checkWinCount == 13)
+        {
+            winCountStr = winCountStr = "th";
+        }
+        else {
+            switch (checkWinCount % 10)
+            {
+                case 1: winCountStr = "st"; break;
+                case 2: winCountStr = "nd"; break;
+                case 3: winCountStr = "rd"; break;
+                default: winCountStr = "th"; break;
+            }
+        }
+        return winCountStr;
     }
 
     private void OnReturnBtnClick(ClickEvent inEvent) {
