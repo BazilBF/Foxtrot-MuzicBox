@@ -355,10 +355,6 @@ public class GameData
                     if (!inDoNotSet)
                     {
                         this._lastNoteSet = i;
-                        if (i == this.notes.Count - 1)
-                        {
-                            this._allNotePlayed = true;
-                        }
                     }
                     returnScoreNote = this.notes[i];
                     break;
@@ -367,6 +363,11 @@ public class GameData
                 {
                     break;
                 }
+            }
+
+            int[] lastNoteCoordinate = this.GetLastNoteCoordinates();
+            if (!inDoNotSet && !this._allNotePlayed && lastNoteCoordinate[0] <= inNoteCoordinates[0] && lastNoteCoordinate[1] <= inNoteCoordinates[1] && lastNoteCoordinate[2] <= inNoteCoordinates[2]) {
+                this._allNotePlayed = true;
             }
 
             return returnScoreNote;
@@ -395,7 +396,7 @@ public class GameData
 
         public bool CheckAllNotesPlayed()
         {
-            return this._allNotePlayed;
+            return (this._allNotePlayed || this.GetNotesCount()==0);
         }
 
         public bool GetPlayable()
@@ -540,33 +541,39 @@ public class GameData
             for (int i = 0; i < this._playableStaffs.Count; i++)
             {
 
-                int[] tmpNotesCoordinates = this._playableStaffs[i].GetLastNoteCoordinates();
-                ScoreNote tmpNote = this._playableStaffs[i].GetNote(tmpNotesCoordinates, true);
-                                
-                int noteLength = tmpNote.GetLength();
-                float noteMeasure = tmpNote.GetMeasure();
-
-                int totalBeats32s = (tmpNotesCoordinates[0] * scoreMeasure + tmpNotesCoordinates[1]) * (32 / scoreLength) + (int)(noteMeasure * (32.0F / (float)noteLength));
-
-                if (lastBeat32sCount == 0 || totalBeats32s > lastBeat32sCount)
+                if (this._playableStaffs[i].GetNotesCount() > 0)
                 {
-                    lastBeat32sCount = totalBeats32s;
+                    int[] tmpNotesCoordinates = this._playableStaffs[i].GetLastNoteCoordinates();
+                    ScoreNote tmpNote = this._playableStaffs[i].GetNote(tmpNotesCoordinates, true);
+
+                    int noteLength = tmpNote.GetLength();
+                    float noteMeasure = tmpNote.GetMeasure();
+
+                    int totalBeats32s = (tmpNotesCoordinates[0] * scoreMeasure + tmpNotesCoordinates[1]) * (32 / scoreLength) + (int)(noteMeasure * (32.0F / (float)noteLength));
+
+                    if (lastBeat32sCount == 0 || totalBeats32s > lastBeat32sCount)
+                    {
+                        lastBeat32sCount = totalBeats32s;
+                    }
                 }
             }
 
             for (int i = 0; i < this._unPlayableStaffs.Count; i++)
             {
-                int[] tmpNotesCoordinates = this._unPlayableStaffs[i].GetLastNoteCoordinates();
-                ScoreNote tmpNote = this._unPlayableStaffs[i].GetNote(tmpNotesCoordinates,true);
-                                
-                int noteLength = tmpNote.GetLength();
-                float noteMeasure = tmpNote.GetMeasure();
-
-                int totalBeats32s = (tmpNotesCoordinates[0] * scoreMeasure + tmpNotesCoordinates[1]) * (32 / scoreLength) + +(int)(noteMeasure * (32.0F / (float)noteLength));
-
-                if (lastBeat32sCount == 0 || totalBeats32s > lastBeat32sCount)
+                if (this._unPlayableStaffs[i].GetNotesCount() > 0)
                 {
-                    lastBeat32sCount = totalBeats32s;
+                    int[] tmpNotesCoordinates = this._unPlayableStaffs[i].GetLastNoteCoordinates();
+                    ScoreNote tmpNote = this._unPlayableStaffs[i].GetNote(tmpNotesCoordinates, true);
+
+                    int noteLength = tmpNote.GetLength();
+                    float noteMeasure = tmpNote.GetMeasure();
+
+                    int totalBeats32s = (tmpNotesCoordinates[0] * scoreMeasure + tmpNotesCoordinates[1]) * (32 / scoreLength) + +(int)(noteMeasure * (32.0F / (float)noteLength));
+
+                    if (lastBeat32sCount == 0 || totalBeats32s > lastBeat32sCount)
+                    {
+                        lastBeat32sCount = totalBeats32s;
+                    }
                 }
             }
 
@@ -586,27 +593,28 @@ public class GameData
             return this.GetNextNoteCoordinates(inStaffIndex,inIsPlayable, tmpNoteCount[inStaffIndex] + 1);
         }
 
-        public SynthNote GetLevelNote(int inStaffIndex, bool inIsPlayable, MusicCoordinates inMusicCoordinates, int inBeatOffset=0)
+        public SynthNote GetLevelNote(int inStaffIndex, bool inIsPlayable, MusicCoordinates inMusicCoordinates)
         {
             SynthNote returnNote = null;
 
             this._currentBeats32sCount = inMusicCoordinates.GetTotalBeat32s();
 
-            MusicCoordinates tmpMusicCoordinates = MusicCoordinates.GetCopy(inMusicCoordinates);
-            tmpMusicCoordinates.AddMetrics(0, inBeatOffset, 0, 0);
+            
 
-            int[] currentNoteCoordinates = { tmpMusicCoordinates.GetBars() + 1, tmpMusicCoordinates.GetBeats() + 1, tmpMusicCoordinates.GetBeat32s() + 1 };
-            //Debug.Log($"GameData[{this._nameCheck}]:{inNoteCoordinates[0]}x{inNoteCoordinates[1]}x{inNoteCoordinates[2]}");
-
+            int[] currentNoteCoordinates = { inMusicCoordinates.GetBars() + 1, inMusicCoordinates.GetBeats() + 1, inMusicCoordinates.GetBeat32s() + 1 };
+            
             List<ScoreStaff> tmpStaffList = (inIsPlayable? this._playableStaffs : this._unPlayableStaffs);
             List<int> tmpNoteCount = (inIsPlayable ? this._playbleNoteCount : this._unPlaybleNoteCount);
 
-            ScoreNote checkScoreNote = tmpStaffList[inStaffIndex].GetNote(currentNoteCoordinates);
-
-            if (checkScoreNote != null)
+            if (tmpStaffList[inStaffIndex].GetNotesCount() > 0)
             {
-                returnNote = new SynthNote(checkScoreNote.GetNote(), checkScoreNote.GetOctave(), checkScoreNote.GetMeasure(), checkScoreNote.GetLength(), checkScoreNote.GetGain());
-                tmpNoteCount[inStaffIndex]++;
+                ScoreNote checkScoreNote = tmpStaffList[inStaffIndex].GetNote(currentNoteCoordinates);
+
+                if (checkScoreNote != null)
+                {
+                    returnNote = new SynthNote(checkScoreNote.GetNote(), checkScoreNote.GetOctave(), checkScoreNote.GetMeasure(), checkScoreNote.GetLength(), checkScoreNote.GetGain());
+                    tmpNoteCount[inStaffIndex]++;
+                }
             }
 
             bool allPlayableNotesPlayed = true;

@@ -46,6 +46,7 @@ public class BeatListner : MonoBehaviour
     {
         int frequencySegmentStart = (int) Math.Round(this.frequencyWindowStart/this._frequencyStep);
         int frequencySegmentEnd = (int) Math.Round(this.frequencyWindowStart / this._frequencyStep);
+        //tst
 
         this._activeAudioSource.GetSpectrumData(this._spectrumArray, 0, FFTWindow.Rectangular);
 

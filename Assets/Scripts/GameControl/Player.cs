@@ -455,7 +455,7 @@ public class Player
 
     public int GetCurrentNoteCount()
     {
-        return this._currentLevelScore;
+        return this._currentNoteCount;
     }
 
     public int GetPlayerXP()

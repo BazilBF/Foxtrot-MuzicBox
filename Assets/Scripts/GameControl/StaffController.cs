@@ -226,8 +226,8 @@ public class StaffController : MonoBehaviour
         this._staffInstrument.QueueNote(inNextNote, inTrueNote);
     }
 
-    public void KeyStroke(SynthNote inNoteToPlay, MusicCoordinates inMusicCoordinates) {
-        this._staffInstrument.KeyStroke(inNoteToPlay, inMusicCoordinates, _trueNote);
+    public void KeyStroke(SynthNote inNoteToPlay, MusicCoordinates inMusicCoordinates, bool inTrueNote) {
+        this._staffInstrument.KeyStroke(inNoteToPlay, inMusicCoordinates, inTrueNote);
     }
 
     public void PlayerTaped()

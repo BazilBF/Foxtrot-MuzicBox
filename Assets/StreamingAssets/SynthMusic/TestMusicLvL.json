@@ -11511,7 +11511,7 @@
 					"note":"Main 1",
 					"instrument":"Sin",
 					"instrumentGain":1.0,
-					"playable":true,
+					"playable":"false",
 					"notes":[
 						{
                             "bar": 1,
@@ -11533,7 +11533,7 @@
 					"notes":[
 						{
                             "bar": 1,
-                            "beat": 1,
+                            "beat": 2,
                             "beat32": 1,
                             "measure": 1,
                             "length": 8,

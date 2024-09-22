@@ -17,6 +17,19 @@ public class FieldContainer : MonoBehaviour
         Dismiss
     }
 
+    public class FieldMessageParams {
+        private MusicCoordinates _musicCoordinates;
+        private bool _beatOffsetPlayed;
+
+        public FieldMessageParams(MusicCoordinates inMusicCoordinates, bool inBeatOffsetPlayed) { 
+            this._beatOffsetPlayed = inBeatOffsetPlayed;
+            this._musicCoordinates = inMusicCoordinates;
+        }
+
+        public MusicCoordinates GetMusicCoordinates() { return _musicCoordinates; }
+        public bool GetBeatOffsetPlayed() {  return _beatOffsetPlayed; }
+    }
+
     public GameObject background = null;
     public GameObject InstrumentStaff = null;
 
@@ -477,21 +490,24 @@ public class FieldContainer : MonoBehaviour
         }
     }
 
-    public void SetStaffNotes(MusicCoordinates inMusicCoordinates) {
+    public void SetStaffNotes(FieldMessageParams infieldMessageParams) {
+        MusicCoordinates msgMusicCoordinates = infieldMessageParams.GetMusicCoordinates();
+        bool justPlayNote = !infieldMessageParams.GetBeatOffsetPlayed();
+
         if ((this._currentState == CurrentState.Playing || this._currentState == CurrentState.Moving) && !this._partStaffData.CheckAllNotesPlayed())
         {
             double beatOffsetLength = this._controller.GetBeatOffset() * this._controller.GetBeatLentgthSec();
 
             for (int i = 0; i < this._unPlayableInstruments.Length; i++) {
                 
-                SynthNote currentNote = this._partStaffData.GetLevelNote(i, false, inMusicCoordinates);
+                SynthNote currentNote = this._partStaffData.GetLevelNote(i, false, msgMusicCoordinates);
                 if (currentNote != null)
                 {
-                    _unPlayableInstruments[i].KeyStroke(currentNote, inMusicCoordinates, true);
+                    this._unPlayableInstruments[i].KeyStroke(currentNote, msgMusicCoordinates, true);
                 }
             }
 
-            if (this._currentState == CurrentState.Playing)
+            if (this._playableStaffs.Length > 0)
             {
                 int startIndex = this._rand.Next(1, this._playableStaffs.Length);
                 bool noteIsSet = false;
@@ -499,53 +515,40 @@ public class FieldContainer : MonoBehaviour
                 for (int i = 0; i < this._playableStaffs.Length; i++)
                 {
 
-                    int currentIndex = (startIndex+i)%this._playableStaffs.Length;
-                    
+                    int currentIndex = (startIndex + i) % this._playableStaffs.Length;
+
+                    MusicCoordinates tmpMusicCoordinates;
+                    if (!justPlayNote)
+                    {
+                        tmpMusicCoordinates = MusicCoordinates.GetCopy(msgMusicCoordinates);
+                        tmpMusicCoordinates.AddMetrics(0, this._controller.GetBeatOffset(), 0, 0);
+                    }
+                    else
+                    {
+                        tmpMusicCoordinates = msgMusicCoordinates;
+
+                    }
 
                     StaffController currentStaffController = this._playableStaffs[currentIndex].GetComponent<StaffController>();
-                    SynthNote currentNote = this._partStaffData.GetLevelNote(currentIndex, true, inMusicCoordinates, this._controller.GetBeatOffset());
+                    SynthNote currentNote = this._partStaffData.GetLevelNote(currentIndex, true, tmpMusicCoordinates);
+
+
 
                     if (currentNote != null)
                     {
-                        BeatPuck.PuckType spawnBeatPuckType;
-                        LevelProgressController tmpLevelController = this._controller.GetLevelProgressController();
-
-                        if (tmpLevelController.GetLevelGoalState() != LevelGoal.LevelGoalState.Bonus && tmpLevelController.GetLevelGoalState() != LevelGoal.LevelGoalState.Won)
+                        //Debug.Log(currentNote);
+                        if (!justPlayNote && this._currentState == CurrentState.Playing)
                         {
-                            switch (this._currentDifficulty)
-                            {
-                                case Player.Difficulty.Easy:
-                                    {
-                                        spawnBeatPuckType = (inMusicCoordinates.GetBeat32s() == 0 && !noteIsSet ? (this._rand.NextDouble() > this._controller.GetBonusProb() ? BeatPuck.PuckType.Note : BeatPuck.PuckType.Bonus) : BeatPuck.PuckType.Invisible);
-                                        break;
-                                    }
-                                case Player.Difficulty.Medium:
-                                    {
-                                        spawnBeatPuckType = (inMusicCoordinates.GetBeat32s() == 0 ? (this._rand.NextDouble() > this._controller.GetBonusProb() / 2.0F ? BeatPuck.PuckType.Note : BeatPuck.PuckType.Bonus) : BeatPuck.PuckType.Invisible);
-                                        break;
-                                    }
-                                case Player.Difficulty.Hard:
-                                    {
-                                        spawnBeatPuckType = BeatPuck.PuckType.Note;
-                                        break;
-                                    }
-                                default: spawnBeatPuckType = BeatPuck.PuckType.Note; break;
-                            }
+                            noteIsSet = this.PrepareNSpawnBeatPuck(tmpMusicCoordinates, currentNote, currentStaffController, beatOffsetLength, noteIsSet);
                         }
-                        else {
-                            spawnBeatPuckType = BeatPuck.PuckType.Bonus;
-                        }
-                        noteIsSet = true;
-
-                        if (spawnBeatPuckType != BeatPuck.PuckType.Mine && spawnBeatPuckType != BeatPuck.PuckType.Invisible)
+                        else
                         {
-                            
-                            tmpLevelController.AddNoteCount();
+
+                            currentStaffController.KeyStroke(currentNote, tmpMusicCoordinates, true);
                         }
 
-                        currentStaffController.SpawnBeatPuck(currentNote, beatOffsetLength, spawnBeatPuckType);
                     }
-                    else if (inMusicCoordinates.GetBeat32s() == 0)
+                    else if (msgMusicCoordinates.GetBeat32s() == 0 && this._currentState == CurrentState.Playing)
                     {
 
                         float deltaDistance = currentStaffController.GetDeltaDistance();
@@ -557,7 +560,7 @@ public class FieldContainer : MonoBehaviour
                                 this._rand.NextDouble() < this._partStaffData.GetMineSpawnChance() / (this._currentDifficulty == Player.Difficulty.Hard ? 1.0F : 2.0F) &&
                                 !this._partStaffData.CheckAllNotesPlayed()
 
-                           )
+                            )
                         {
                             currentStaffController.SpawnBeatPuck(null, beatOffsetLength, BeatPuck.PuckType.Mine);
                             this._mineCoolDown[currentIndex] = 0;
@@ -571,6 +574,50 @@ public class FieldContainer : MonoBehaviour
                 }
             }
         }
+    }
+
+    private bool PrepareNSpawnBeatPuck(MusicCoordinates inMusicCoordinates, SynthNote inCurrentNote, StaffController inCurrentStaffController, double inBeatOffsetLength, bool inNoteIsSet) {
+        bool noteIsSet = inNoteIsSet;
+        BeatPuck.PuckType spawnBeatPuckType;
+        LevelProgressController tmpLevelController = this._controller.GetLevelProgressController();
+
+        if (tmpLevelController.GetLevelGoalState() != LevelGoal.LevelGoalState.Bonus && tmpLevelController.GetLevelGoalState() != LevelGoal.LevelGoalState.Won)
+        {
+            switch (this._currentDifficulty)
+            {
+                case Player.Difficulty.Easy:
+                    {
+                        spawnBeatPuckType = (inMusicCoordinates.GetBeat32s() == 0 && !noteIsSet ? (this._rand.NextDouble() > this._controller.GetBonusProb() ? BeatPuck.PuckType.Note : BeatPuck.PuckType.Bonus) : BeatPuck.PuckType.Invisible);
+                        break;
+                    }
+                case Player.Difficulty.Medium:
+                    {
+                        spawnBeatPuckType = (inMusicCoordinates.GetBeat32s() == 0 ? (this._rand.NextDouble() > this._controller.GetBonusProb() / 2.0F ? BeatPuck.PuckType.Note : BeatPuck.PuckType.Bonus) : BeatPuck.PuckType.Invisible);
+                        break;
+                    }
+                case Player.Difficulty.Hard:
+                    {
+                        spawnBeatPuckType = BeatPuck.PuckType.Note;
+                        break;
+                    }
+                default: spawnBeatPuckType = BeatPuck.PuckType.Note; break;
+            }
+        }
+        else
+        {
+            spawnBeatPuckType = BeatPuck.PuckType.Bonus;
+        }
+        noteIsSet = true;
+
+        if (spawnBeatPuckType != BeatPuck.PuckType.Mine && spawnBeatPuckType != BeatPuck.PuckType.Invisible)
+        {
+
+            tmpLevelController.AddNoteCount();
+        }
+
+        inCurrentStaffController.SpawnBeatPuck(inCurrentNote, inBeatOffsetLength, spawnBeatPuckType);
+
+        return noteIsSet;
     }
 
     public bool CheckBeatsPucks()

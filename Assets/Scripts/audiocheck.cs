@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
+    
     public GameObject gameFieldPrefab = null;
 
     private LevelProgressController _levelProgressController;
@@ -62,7 +63,10 @@ public class GameController : MonoBehaviour
     private int _bpm = 60;
     
 
-    public int beatOffset = 6;
+    private int _beatOffset = 6;
+
+    private bool _beatOffsetPlayed = false;
+    
 
     private float _offsetGUI = 0.15F;
     private int _measure = 3;
@@ -104,9 +108,9 @@ public class GameController : MonoBehaviour
         this.LoadUserData();
 
         switch (this._activePlayer.GetDifficulty()) {
-            case Player.Difficulty.Medium: this.beatOffset = 5; break;
-            case Player.Difficulty.Hard: this.beatOffset = 4; break;
-            default: this.beatOffset = 6; break;
+            case Player.Difficulty.Medium: this._beatOffset = 5; break;
+            case Player.Difficulty.Hard: this._beatOffset = 4; break;
+            default: this._beatOffset = 6; break;
         }
 
         
@@ -169,8 +173,13 @@ public class GameController : MonoBehaviour
         if (this._beat32IsSet) {
             MusicCoordinates tmpCoordinates = MusicCoordinates.GetCopy(this._musicCoordinatesPlayed);
 
+            if (!this._beatOffsetPlayed && tmpCoordinates.GetTotalBeats() - this.GetBeatOffset() >= 0)
+            {
+                this._beatOffsetPlayed = true;
+            }
+            
 
-            this._activeGameField.SendMessage("SetStaffNotes", tmpCoordinates);
+            this._activeGameField.SendMessage("SetStaffNotes", new FieldContainer.FieldMessageParams( tmpCoordinates, this._beatOffsetPlayed));
 
             this._beat32IsSet = false;
 
@@ -181,10 +190,9 @@ public class GameController : MonoBehaviour
             bool fieldHasBeatPucks = activeFieldScript.CheckBeatsPucks();
             bool readyToChange = !musicBoxIsPlaying && partStaffAllNotePlayed && !fieldHasBeatPucks;
 
+           
             LevelGoal.LevelGoalState currentLevelGoalState = this._levelProgressController.GetLevelGoalState();
             string currentPartName = this._activePartStaffsData.GetNameCheck();
-
-            //Debug.Log($"!MusicBoxIsPlaying = {!MusicBoxIsPlaying} && PartStaffAllNotePlayed = {PartStaffAllNotePlayed} && !FieldHasBeatPucks = {!FieldHasBeatPucks}");
 
             if (readyToChange || currentLevelGoalState == LevelGoal.LevelGoalState.Lost)
             {
@@ -204,8 +212,8 @@ public class GameController : MonoBehaviour
                 }
                 else if (this._roundStarted && currentLevelGoalState != LevelGoal.LevelGoalState.Lost)
                 {
-                    //Debug.Log($"Active: {this._activePartStaffsData.GetPartStaffDataName()} | Next {this._nextPartStaffsData.GetPartStaffDataName()}");
                     this.ChangeActiveGameField();
+                    this._beatOffsetPlayed = false;
                 }
             }
         }
@@ -262,7 +270,7 @@ public class GameController : MonoBehaviour
     }
 
     public int GetBeatOffset() {
-        return this.beatOffset;
+        return this._beatOffset;
     }
 
     public int GetBpm() {
@@ -352,6 +360,7 @@ public class GameController : MonoBehaviour
         FieldContainer nextFieldContainerScript = this._nextGameField.GetComponent<FieldContainer>();
         this._nextGameMusicBox = nextFieldContainerScript.SetPartStaffData(this._nextPartStaffsData);
         nextFieldContainerScript.SetState(FieldContainer.CurrentState.Orbiting);
+        Debug.Log(this._levelProgressController.GetLevelGoalState());
 
     }
 

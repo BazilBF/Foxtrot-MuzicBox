@@ -42,7 +42,7 @@ public class DestroyLevelGoal : LevelGoal
     {
         this._enemyCurrentHealth -= this._baseAtack * DestroyLevelGoal._MarksModifier[inScoreMarkIndex];
 
-        if (this._enemyCurrentHealth <= 0.0F) {
+        if (this._enemyCurrentHealth <= 0.0F && !this._playerHasWon) {
             this.SetLevelGoalState(LevelGoal.LevelGoalState.Bonus);
             this._playerHasWon = true;
             this._currentTimesPlayed = this._rythmLevel.GetTimesPlayed();
@@ -81,7 +81,7 @@ public class DestroyLevelGoal : LevelGoal
 
     public override LevelGoalState GetLevelGoalState()
     {
-        if (this._playerHasWon && this._rythmLevel.GetTimesPlayed() > this._currentTimesPlayed) {
+        if (this._playerHasWon){// && this._rythmLevel.GetTimesPlayed() > this._currentTimesPlayed) {
             this.SetLevelGoalState(LevelGoalState.Won);
         }
         return base.GetLevelGoalState();
