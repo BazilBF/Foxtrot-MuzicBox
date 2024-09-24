@@ -15,7 +15,7 @@ public class MusicBox
 
     private int _instrumentsCount = 0;
 
-    public MusicBox(string[] inInstruments, float[] inInstrumentsGain, float inSampleRate)
+    public MusicBox(string[] inInstruments, float inTotalInstrumentsGain, float inSampleRate)
     {
         this._sampleRate = inSampleRate;
 
@@ -24,24 +24,16 @@ public class MusicBox
 
         this._musicBoxMethronome = new SynthClick(this._sampleRate, 1.0F);
 
-        for (int i = 0; i < this._instrumentsCount; i++)
-        {
-            _musicBoxInstruments[i] = MusicBox.GetSynthInstrument(inInstruments[i],this._sampleRate, inInstrumentsGain[i]);
-            this._totalGain += inInstrumentsGain[i];
-        }
-        this._totalGain += 1.0F;
+        this._totalGain = inTotalInstrumentsGain + 1.0F; //1.0F - for methronome
     }
 
-    public MusicBox(SynthInstrument[] inInstruments, float inSampleRate)
+    public MusicBox(SynthInstrument[] inInstruments, float inTotalInstrumentsGain, float inSampleRate)
     {
         this._sampleRate = inSampleRate;
         this._instrumentsCount = inInstruments.Length;
         this._musicBoxInstruments = inInstruments;
-
-        for (int i=0; i < inInstruments.Length; i++) {
-            _totalGain += inInstruments[i].GetInstrumentGain();
-        }
-        this._totalGain += 1.0F;
+                
+        this._totalGain += inTotalInstrumentsGain + 1.0F; //1.0F - for methronome
 
         this._musicBoxMethronome = new SynthClick(this._sampleRate, 1.0F);
 
@@ -107,16 +99,16 @@ public class MusicBox
 
         for (int i = 0;i < this._instrumentsCount;i++)
         {
-            float InstrumentAmplitude = this._musicBoxInstruments[i].PlayNote(inMusicCoordinates, inBeatLentgth, inPitchCoef);
+            float instrumentAmplitude = this._musicBoxInstruments[i].PlayNote(inMusicCoordinates, inBeatLentgth, inPitchCoef);
 
-            if (Math.Abs(InstrumentAmplitude) > 0) {
-                amplitude += InstrumentAmplitude;
+            if (Math.Abs(instrumentAmplitude) > 0) {
+                amplitude += instrumentAmplitude;
             }
         }
 
         amplitude += this._musicBoxMethronome.PlayNote(inMusicCoordinates, inBeatLentgth) * inMetronomeGain;
 
-        return amplitude / _totalGain;
+        return amplitude / this._totalGain;
     }
 
     public void beatStroke(MusicCoordinates inMusicCoordinates) {

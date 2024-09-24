@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    
+
     public GameObject gameFieldPrefab = null;
 
     private LevelProgressController _levelProgressController;
@@ -23,7 +23,7 @@ public class GameController : MonoBehaviour
 
     private float _speedCoef = 1.0F;
     private float _pitchCoef = 1.0F;
-    
+
     private float _deltaChangeSpeedPerSecond = 0.0F;
     private float _deltaChangePitchPerSecond = 0.0F;
     private float _currentSpeedCoef = 0.0F;
@@ -33,8 +33,8 @@ public class GameController : MonoBehaviour
     private readonly float _failChangeSpeedDuration = 5.0F;
     private readonly float _failSpeedPitchCoef = 0.01F;
 
-    private bool _isFailEnding = false; 
-    
+    private bool _isFailEnding = false;
+
 
     private Player _activePlayer;
 
@@ -61,12 +61,12 @@ public class GameController : MonoBehaviour
     private Camera _gameCamera;
 
     private int _bpm = 60;
-    
+
 
     private int _beatOffset = 6;
 
     private bool _beatOffsetPlayed = false;
-    
+
 
     private float _offsetGUI = 0.15F;
     private int _measure = 3;
@@ -79,7 +79,7 @@ public class GameController : MonoBehaviour
     private bool _beat32IsSet = false;
     private bool _roundStarted = false;
 
-    
+
 
     private float _mineOffset = 0.1F;
 
@@ -89,7 +89,10 @@ public class GameController : MonoBehaviour
 
     private MusicCoordinates _musicCoordinatesPlayed;
 
-    
+    private int _maxInstrumentsCount = 0;
+    private float _maxInstrumentsGain = 0.0F;
+
+
 
     private AudioSource _audioSource;
     private float _currentGain;
@@ -113,13 +116,16 @@ public class GameController : MonoBehaviour
             default: this._beatOffset = 6; break;
         }
 
-        
+
 
         this._activeLevel = GameData.RythmLevel.LoadSynthTrack(this._activePlayer.GetCurrentLevelFileName());
+        this._maxInstrumentsCount = this._activeLevel.GetMaxInstrumentsCount();
+        this._maxInstrumentsGain = this._activeLevel.GetMaxInstrumentsGain();
+
         this._levelProgressController = new LevelProgressController(this._activePlayer, this._activeLevel);
 
-        this._activePartStaffsData = this._activeLevel.LoadSynth(0,LevelGoal.LevelGoalState.Starting);
-        this._activeGameFieldBeat32sCount = this._activePartStaffsData.GetPartBeat32sCount(this._measure,this._length);
+        this._activePartStaffsData = this._activeLevel.LoadSynth(0, LevelGoal.LevelGoalState.Starting);
+        this._activeGameFieldBeat32sCount = this._activePartStaffsData.GetPartBeat32sCount(this._measure, this._length);
 
 
 
@@ -166,7 +172,7 @@ public class GameController : MonoBehaviour
             }
 
             this._activeGameField.SendMessage("SpawnBeatBarr", beatBarrGain);
-            
+
             this._beatIsSet = false;
         }
 
@@ -177,9 +183,9 @@ public class GameController : MonoBehaviour
             {
                 this._beatOffsetPlayed = true;
             }
-            
 
-            this._activeGameField.SendMessage("SetStaffNotes", new FieldContainer.FieldMessageParams( tmpCoordinates, this._beatOffsetPlayed));
+
+            this._activeGameField.SendMessage("SetStaffNotes", new FieldContainer.FieldMessageParams(tmpCoordinates, this._beatOffsetPlayed));
 
             this._beat32IsSet = false;
 
@@ -190,14 +196,14 @@ public class GameController : MonoBehaviour
             bool fieldHasBeatPucks = activeFieldScript.CheckBeatsPucks();
             bool readyToChange = !musicBoxIsPlaying && partStaffAllNotePlayed && !fieldHasBeatPucks;
 
-           
+
             LevelGoal.LevelGoalState currentLevelGoalState = this._levelProgressController.GetLevelGoalState();
             string currentPartName = this._activePartStaffsData.GetNameCheck();
 
             if (readyToChange || currentLevelGoalState == LevelGoal.LevelGoalState.Lost)
             {
 
-                if (currentLevelGoalState == LevelGoal.LevelGoalState.Lost && !this._isFailEnding  && (this._currentSpeedCoef - this._failSpeedPitchCoef) > Math.Abs(this._deltaChangeSpeedPerSecond))
+                if (currentLevelGoalState == LevelGoal.LevelGoalState.Lost && !this._isFailEnding && (this._currentSpeedCoef - this._failSpeedPitchCoef) > Math.Abs(this._deltaChangeSpeedPerSecond))
                 {
                     this._isFailEnding = true;
                     this._changeSpeedDuration = this._failChangeSpeedDuration;
@@ -205,9 +211,9 @@ public class GameController : MonoBehaviour
                     this._activePlayer.SetSpeedCoef(this._failSpeedPitchCoef);
 
                 }
-                else if ((currentLevelGoalState == LevelGoal.LevelGoalState.Lost  && (this._currentSpeedCoef - this._failSpeedPitchCoef) <= Math.Abs(this._deltaChangeSpeedPerSecond)) || (currentLevelGoalState == LevelGoal.LevelGoalState.Won && currentPartName == "Outro"))
+                else if ((currentLevelGoalState == LevelGoal.LevelGoalState.Lost && (this._currentSpeedCoef - this._failSpeedPitchCoef) <= Math.Abs(this._deltaChangeSpeedPerSecond)) || (currentLevelGoalState == LevelGoal.LevelGoalState.Won && currentPartName == "Outro"))
                 {
-                    this._activePlayer.PrepareAndSaveData(this._levelProgressController);                    
+                    this._activePlayer.PrepareAndSaveData(this._levelProgressController);
                     this._activePlayer.LoadScene(GameController._resultSceneId);
                 }
                 else if (this._roundStarted && currentLevelGoalState != LevelGoal.LevelGoalState.Lost)
@@ -218,7 +224,7 @@ public class GameController : MonoBehaviour
             }
         }
 
-        if (this._speedCoef != this._activePlayer.GetGameSpeedCoef()) { 
+        if (this._speedCoef != this._activePlayer.GetGameSpeedCoef()) {
             this.StartChangingSpeed(this._activePlayer.GetGameSpeedCoef());
         }
 
@@ -255,7 +261,10 @@ public class GameController : MonoBehaviour
         return this._musicCoordinatesPlayed;
     }
 
-    
+    public float GetMaxInstrumentsGain() { 
+        return this._maxInstrumentsGain;
+    }
+
 
     public GameData.RythmLevel GetActiveRythmLevel() {
         return this._activeLevel;

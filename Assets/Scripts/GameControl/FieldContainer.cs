@@ -476,7 +476,7 @@ public class FieldContainer : MonoBehaviour
             allInstrumentsGaings[yIterator] = instrumentGain;
         }
 
-            return new MusicBox(allSynthIntstruments, this._sampleRate);
+            return new MusicBox(allSynthIntstruments, this._controller.GetMaxInstrumentsGain(), this._sampleRate);
     }
 
     public void SpawnBeatBarr(float inBeatBarrGain) {

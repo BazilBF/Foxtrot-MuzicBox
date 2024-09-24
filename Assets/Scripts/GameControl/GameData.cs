@@ -86,6 +86,32 @@ public class GameData
             return this._timesPlayed;
         }
 
+        public int GetMaxInstrumentsCount() { 
+            int maxInstrumentsCount = 0;
+            for (int i= 0; i<this.levelStructure.Count;i++) {
+                ScorePart tmpScorePart = this.GetScorePart(this.levelStructure[i]);
+                int tmpInstrumentCount = tmpScorePart.GetInstrumentsCount(ScorePart.StaffTypes.AllStaffs);
+                if (tmpInstrumentCount> maxInstrumentsCount) {
+                    maxInstrumentsCount = tmpInstrumentCount;
+                }
+            }
+            return maxInstrumentsCount;
+        }
+
+        public float GetMaxInstrumentsGain() {
+            float maxInstrumentsGain = 0;
+            for (int i = 0; i < this.levelStructure.Count; i++)
+            {
+                ScorePart tmpScorePart = this.GetScorePart(this.levelStructure[i]);
+                float tmpInstrumentGain = tmpScorePart.GetTotalInstrumentsGain(ScorePart.StaffTypes.AllStaffs);
+                if (tmpInstrumentGain > maxInstrumentsGain)
+                {
+                    maxInstrumentsGain = tmpInstrumentGain;
+                }
+            }
+            return maxInstrumentsGain;
+        }
+
         public ScorePart GetScorePart(string inScorePartType)
         {
             ScorePart returnScorePart = null;
@@ -103,9 +129,7 @@ public class GameData
             int returnIndex = 0;
             if (ScorePartList.Count > 0)
             {
-                Debug.Log($"Limit {ScorePartList.Count - 1}");
                 returnIndex = this.rand.Next(ScorePartList.Count);
-                Debug.Log($"Index {returnIndex}");
                 returnScorePart = ScorePartList[returnIndex];
                 returnScorePart.ResetScoreStaff();
             }
@@ -424,6 +448,12 @@ public class GameData
     [System.Serializable]
     public class ScorePart
     {
+        public enum StaffTypes{ 
+            AllStaffs,
+            BeatStaffs,
+            MelodyStaffs
+        }
+
         public List<ScoreStaff> ScoreMelodyStaffs = new List<ScoreStaff>();
         public List<ScoreStaff> ScoreBeatStaffs = new List<ScoreStaff>();
         public int brigeOffsetBeats = 1;
@@ -454,6 +484,39 @@ public class GameData
             {
                 this.ScoreBeatStaffs[i].ResetScoreStaff();
             }
+        }
+
+        public int GetInstrumentsCount (StaffTypes inStaffType)
+        {
+            int returnCount = 0;
+
+            if (inStaffType == StaffTypes.AllStaffs || inStaffType == StaffTypes.MelodyStaffs) {
+                returnCount += this.ScoreMelodyStaffs.Count;
+            }
+            if (inStaffType == StaffTypes.AllStaffs || inStaffType == StaffTypes.BeatStaffs)
+            {
+                returnCount += this.ScoreBeatStaffs.Count;
+            }
+
+            return returnCount;
+        }
+
+        public float GetTotalInstrumentsGain(StaffTypes inStaffType) { 
+            float returnGain = 0;
+            if (inStaffType == StaffTypes.AllStaffs || inStaffType == StaffTypes.MelodyStaffs)
+            {
+                for (int i = 0; i < this.ScoreMelodyStaffs.Count; i++) {
+                    returnGain += this.ScoreMelodyStaffs[i].GetInstrumentGain();
+                }
+            }
+            if (inStaffType == StaffTypes.AllStaffs || inStaffType == StaffTypes.BeatStaffs)
+            {
+                for (int i = 0; i < this.ScoreBeatStaffs.Count; i++)
+                {
+                    returnGain += this.ScoreBeatStaffs[i].GetInstrumentGain();
+                }
+            }
+            return returnGain;
         }
     }
 
