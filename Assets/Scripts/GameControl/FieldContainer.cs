@@ -298,6 +298,11 @@ public class FieldContainer : MonoBehaviour
         return levelProgressController.AddDamage();
     }
 
+    public void BreakComboChain() {
+        LevelProgressController levelProgressController = this._controller.GetLevelProgressController();
+        levelProgressController.BreakComboChain();
+    }
+
     public void SetState(CurrentState inCurrentState) {
         this._currentState = inCurrentState;
         this._currentTime = 0.0F;

@@ -155,7 +155,7 @@ public class LevelProgressController
         return this._targetGoal.AddDamage();
     }
 
-    private void BreakComboChain() {
+    public void BreakComboChain() {
         this._comboCount = 0;
         this._comboActive = false;
     }

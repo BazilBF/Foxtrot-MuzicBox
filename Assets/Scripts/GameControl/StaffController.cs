@@ -366,19 +366,20 @@ public class StaffController : MonoBehaviour
 
             if (!this._demoModeFlag)
             {
-                if (trueNote && nextPuckType != BeatPuck.PuckType.Invisible)
+                if (trueNote && nextPuckIsTapped && nextPuckType != BeatPuck.PuckType.Invisible && nextPuckType != BeatPuck.PuckType.Mine) 
                 {
                     this._parentScript.AddScore(this._nextDeltaWinDistance,(nextPuckType == BeatPuck.PuckType.Bonus));
                     this._nextDeltaWinDistance = -1.0F;
                 }
                 else
                 {
-
                     if ((nextPuckType == BeatPuck.PuckType.Mine && nextPuckIsTapped) || nextPuckType == BeatPuck.PuckType.Note)
                     {
-
                         this._parentScript.AddDamage();
                     }
+                    else if (nextPuckType != BeatPuck.PuckType.Invisible ) {
+                        this._parentScript.BreakComboChain();
+                    }                    
                 }
             }
             if (nextPuckType != BeatPuck.PuckType.Mine)
