@@ -4,7 +4,10 @@ Game logics scripts are located in Foxtrot-MuzicBox/Assets//Scripts
 
 Current stage of development: implementation of saving user progress and statistics and UI (this stil unstable)
 
-Implemented features:
+[Actual Videos]
+Game loop example: https://www.youtube.com/watch?v=6AOiqpeGaCM
+
+[Implemented features]
 - 4 simple synth instruments (see /Foxtrot-MuzicBox/Assets/Scripts/AudioGenerator):
   - saw,
   - sin,
@@ -26,13 +29,12 @@ Implemented features:
   - bonus
   - invisible(auto)
  
-Planned features:
+[Planned features]
 - more instruments
 - more game modes
 - story mode
 
 
-
+[Archived videos]
 example of fail gameplay [https://youtu.be/BXhWQPKjPS0](https://youtu.be/mY554DiK4KY)
-
 example of almost win (all goals are cleared until music ends all notes are become a bonus ones) and both skills [https://youtu.be/nEDgIFQN1dk](https://youtu.be/nEDgIFQN1dk)
