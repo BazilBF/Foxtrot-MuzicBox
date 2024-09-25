@@ -142,6 +142,9 @@ public class GameController : MonoBehaviour
         FieldContainer activeFieldContainerScript = this._activeGameField.GetComponent<FieldContainer>();
         this._activeGameMusicBox = activeFieldContainerScript.SetPartStaffData(this._activePartStaffsData);
         activeFieldContainerScript.SetState(FieldContainer.CurrentState.Moving);
+        this._isPaused = true;
+        Time.timeScale = 0.0F;
+        this._audioSource.Pause();
 
     }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,14 @@ public class UIScript : MonoBehaviour
     private string _uiProgressFile;
     private VisualElement _progressElement;
     private VisualElement _pauseMenuElement;
+    private VisualElement _startMenu;
+
+    private bool _isStarted = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        this._isStarted = false;
         GameObject controllerGameObject = GameObject.FindGameObjectWithTag("GameController");
         if (controllerGameObject != null)
         {
@@ -43,20 +48,33 @@ public class UIScript : MonoBehaviour
 
             this._progressElement = this._uiDocument.rootVisualElement.Query("ProgressInfo");
             this._pauseMenuElement = this._uiDocument.rootVisualElement.Query("PauseMenu");
+            this._startMenu = this._uiDocument.rootVisualElement.Query("StartMenu");
 
             Button pauseBtn = this._uiDocument.rootVisualElement.Query<Button>("PauseBtn");
-            pauseBtn.RegisterCallback<ClickEvent>(OnPauseButtonClick);
+            pauseBtn.RegisterCallback<ClickEvent>(OnPauseBtnClick);
 
             Button continueBtn = this._uiDocument.rootVisualElement.Query<Button>("ContinueBtn");
-            continueBtn.RegisterCallback<ClickEvent>(OnPauseButtonClick);
+            continueBtn.RegisterCallback<ClickEvent>(OnPauseBtnClick);
+
+            Button startLevelBtn = this._uiDocument.rootVisualElement.Query<Button>("StartLevelBtn");
+            startLevelBtn.RegisterCallback<ClickEvent>(onStartStartLevelBtnClick);
 
             Button endBtn = this._uiDocument.rootVisualElement.Query<Button>("EndBtn");
             endBtn.RegisterCallback<ClickEvent>(OnEndTryBtnClick);
 
             this._progressElement.Add(this._progressVisualTreeAsset.Instantiate());
 
+            string[] tmpPlayerStaffsKeys = this._player.GetStaffsKeys();
+            string[] tmpFormatedStaffKeys = tmpPlayerStaffsKeys.Select((keyStr,index) => $"#{index} - \"{keyStr}\"").ToArray();
 
-            int skillCnt = this._player.GetSkillCount();
+            string tmpDisplayStr = String.Join(", ", tmpFormatedStaffKeys);
+
+            Label staffKeysLabel = this._uiDocument.rootVisualElement.Query<Label>("StaffKeysLabel");
+
+            staffKeysLabel.text = tmpDisplayStr;
+
+
+                int skillCnt = this._player.GetSkillCount();
             for (int i=0; i < skillCnt; i++) {
                 Button tmpSkillButton = this._uiDocument.rootVisualElement.Query<Button>($"Skill{i}Btn");
                 tmpSkillButton.RegisterCallback<ClickEvent, int>(OnToggleSkillClick,i);
@@ -69,7 +87,13 @@ public class UIScript : MonoBehaviour
         
     }
 
-    private void OnPauseButtonClick(ClickEvent inEvent) {
+    private void onStartStartLevelBtnClick(ClickEvent inEvent) {
+        this._controller.TogglePause();
+        this._isStarted = true;
+        this._startMenu.style.display = DisplayStyle.None;
+    }
+
+    private void OnPauseBtnClick(ClickEvent inEvent) {
         this._controller.TogglePause();
     }
 
@@ -109,7 +133,7 @@ public class UIScript : MonoBehaviour
         string levelStatusCheck = "";
 
 
-        if (this._controller.CheckIsPaused() && this._pauseMenuElement.style.display != DisplayStyle.Flex) {
+        if (this._isStarted!&&this._controller.CheckIsPaused() && this._pauseMenuElement.style.display != DisplayStyle.Flex) {
             this._pauseMenuElement.style.display = DisplayStyle.Flex;
 
             int marksCount = this._levelProgressController.GetMarksLength();

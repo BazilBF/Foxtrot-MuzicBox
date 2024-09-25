@@ -71,7 +71,7 @@ public class StaffController : MonoBehaviour
 
     private CurrentState _currentState = CurrentState.Orbiting;
     private Vector3 _backgroundTargetScale;
-    private Vector3 _beatButtonTargetPosition;
+    private Vector2 _beatButtonTargetPosition;
 
     private float _winDistance = 0.1F;
 
@@ -114,16 +114,16 @@ public class StaffController : MonoBehaviour
 
         SpriteRenderer beatButtonSpriteRender = beatButton.GetComponent<SpriteRenderer>();
         beatButtonSpriteRender.sortingLayerName = "Staffs";
-        beatButtonSpriteRender.sortingOrder = 2;
+        beatButtonSpriteRender.sortingOrder = 1;
         
 
         float beatButtonY = -(1 - this._beatButtonOffset) * this._staffHeight / 2.0F + this._beatButtonWidth / 2.0F;
         
         this.beatButton.transform.parent = this.gameObject.transform;
-        this._beatButtonScale = this._beatButtonWidth / beatButtonSpriteRender.sprite.bounds.size.x;
+        this._beatButtonScale = 0.30F * (this._beatButtonWidth / beatButtonSpriteRender.sprite.bounds.size.x);
 
         beatButton.transform.localScale = new Vector3(this._beatButtonScale, this._beatButtonScale, 0);
-        this._beatButtonTargetPosition = new Vector3(0, beatButtonY, 0);
+        this._beatButtonTargetPosition = new Vector2(0, beatButtonY);
         this.beatButton.transform.localPosition = Vector3.zero;
 
 
@@ -161,17 +161,14 @@ public class StaffController : MonoBehaviour
         
         barrSpriteRenderer.color = new UnityEngine.Color(1.0f, 1.0f, 1.0f, inBarrGain);
         barrSpriteRenderer.sortingLayerName = "Staffs";
-        barrSpriteRenderer.sortingOrder = 1;
+        barrSpriteRenderer.sortingOrder = 2;
 
         this._currentBeatBarrs.Enqueue(newBeatBarr);
-
-        float beatButtonPositionY = this.beatButton.transform.localPosition.y;
-        float beatButtonPositionX = this.beatButton.transform.localPosition.x;
 
         newBeatBarr.transform.localPosition = this._spawnPosition;
 
         MovingAlongStaff movingScript = newBeatBarr.GetComponent<MovingAlongStaff>();
-        movingScript.SetObjectMove(new Vector2(inBarrGain*(1.0F - this._spriteOffset) * this._staffWidth, this._staffWidth * this._spriteOffset * inBarrGain),new Vector2(beatButtonPositionX, beatButtonPositionY), (float) inDuration, this._parentScript.GetGameController());
+        movingScript.SetObjectMove(new Vector2(inBarrGain*(1.0F - this._spriteOffset) * this._staffWidth, this._staffWidth * this._spriteOffset * inBarrGain),this._beatButtonTargetPosition, (float) inDuration, this._parentScript.GetGameController());
 
     }
 
@@ -196,14 +193,11 @@ public class StaffController : MonoBehaviour
         }
         
 
-        float beatButtonPositionY = this.beatButton.transform.localPosition.y;
-        float beatButtonPositionX = this.beatButton.transform.localPosition.x;
-
         newPuck.transform.localPosition = this._spawnPosition;
 
         MovingAlongStaff movingScript = newPuck.GetComponent<MovingAlongStaff>();
 
-        movingScript.SetObjectMove(new Vector2((1.0F - this._beatPuckOffset) * this._beatButtonWidth, (1.0F - this._beatPuckOffset) * this._beatButtonWidth), new Vector2(beatButtonPositionX, beatButtonPositionY), (float)inDuration, this._parentScript.GetGameController());
+        movingScript.SetObjectMove(new Vector2((1.0F - this._beatPuckOffset) * this._beatButtonWidth, 0.95F*(1.0F - this._beatPuckOffset) * this._beatButtonWidth), this._beatButtonTargetPosition, (float)inDuration, this._parentScript.GetGameController());
 
         bool visiblePuck = true;
         if (inPuckType == BeatPuck.PuckType.Invisible)
@@ -273,9 +267,9 @@ public class StaffController : MonoBehaviour
         SpriteRenderer beatButtonSpriteRender = beatButton.GetComponent<SpriteRenderer>();
         UnityEngine.Color tmpColor = beatButtonSpriteRender.color;
 
-        float beatButtonScale = this._beatButtonScale + this._staffInstrument.GetCurrentAmplitude() * this._beatButtonMaxScale * this._beatButtonScale;
+        //float beatButtonScale = this._beatButtonTargetPosition + this._staffInstrument.GetCurrentAmplitude() * this._beatButtonMaxScale * this._beatButtonScale;
 
-        beatButton.transform.localScale = new Vector3(beatButtonScale, beatButtonScale, 0.0F);
+        beatButton.transform.localPosition= new Vector3(0, this._beatButtonTargetPosition.y + +this._staffInstrument.GetCurrentAmplitude() * this._beatButtonMaxScale * this._beatButtonScale, 0);
 
         if (this._currentState == CurrentState.Playing) {
 
@@ -411,11 +405,13 @@ public class StaffController : MonoBehaviour
         else
         {
             BeatPuck beatPuckScript = inNextPuck.GetComponent<BeatPuck>();
+            float currentBeatMarkerScale;
+            float puckLeftDistance;
             if (nextPuckDistance >= this._winDistance)
             {
 
-                float puckLeftDistance = (nextPuckDistance - this._winDistance) / (this._totalDistance - this._winDistance);
-                float currentBeatMarkerScale = (1.0F - puckLeftDistance);
+                puckLeftDistance = (nextPuckDistance - this._winDistance) / (this._totalDistance - this._winDistance);
+                currentBeatMarkerScale = (1.0F - puckLeftDistance);
 
                 if (beatPuckScript != null)
                 {
@@ -423,9 +419,13 @@ public class StaffController : MonoBehaviour
                 }
             }
             else {
+                puckLeftDistance = nextPuckDistance / this._winDistance;
+                currentBeatMarkerScale = (1.0F - puckLeftDistance);
+
                 if (beatPuckScript != null)
                 {
-                    beatPuckScript.SetBeatMarkerScale(1.0F);
+                    beatPuckScript.SetReadyToSet();
+                    beatPuckScript.SetBeatMarkerScale(currentBeatMarkerScale);
                 }
             }
 

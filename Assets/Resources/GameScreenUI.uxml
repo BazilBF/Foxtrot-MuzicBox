@@ -17,7 +17,7 @@
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="PauseMenu" style="flex-grow: 1; position: absolute; width: 100%; height: 100%; background-color: rgba(94, 94, 94, 0.6); display: flex;">
+        <ui:VisualElement name="PauseMenu" style="flex-grow: 1; position: absolute; width: 100%; height: 100%; background-color: rgba(94, 94, 94, 0.6); display: none;">
             <ui:VisualElement name="VisualElement" style="flex-grow: 1; width: 80%; height: 80%; position: absolute; margin-left: 0; margin-top: 0; background-color: rgb(65, 65, 65); margin-right: 0; margin-bottom: 0; left: 10%; top: 10%;">
                 <ui:VisualElement style="flex-grow: 1; height: 80%; align-self: stretch; padding-left: 2%; padding-right: 2%; padding-top: 2%; padding-bottom: 2%;">
                     <ui:VisualElement style="flex-grow: 1; width: 70%; align-self: center;">
@@ -55,6 +55,17 @@
                     <ui:Button text="End try" parse-escape-sequences="true" display-tooltip-when-elided="true" name="EndBtn" />
                     <ui:Button text="Continue" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ContinueBtn" />
                 </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="StartMenu" style="flex-grow: 1; position: absolute; background-color: rgb(94, 94, 94); height: 100%; width: 100%; top: -1px; left: 0;">
+            <ui:VisualElement style="flex-grow: 1; align-self: auto; height: 80%;">
+                <ui:Label tabindex="-1" text="Beat pucks hint:" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="font-size: 30%; -unity-font-style: bold; color: rgb(255, 255, 255); -unity-text-align: upper-center;" />
+                <ui:VisualElement style="flex-grow: 1; background-image: resource(&apos;UIModules/hint&apos;); -unity-background-scale-mode: scale-to-fit; height: auto;" />
+            </ui:VisualElement>
+            <ui:VisualElement style="flex-grow: 1; height: 20%; flex-direction: row-reverse; align-self: auto; align-items: center; justify-content: center;">
+                <ui:Button text="Start Level" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StartLevelBtn" style="flex-direction: column;" />
+                <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StaffKeysLabel" style="font-size: 20px; display: flex;" />
+                <ui:Label tabindex="-1" text="Staff keys:" parse-escape-sequences="true" display-tooltip-when-elided="true" style="justify-content: space-between; font-size: 20%;" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
