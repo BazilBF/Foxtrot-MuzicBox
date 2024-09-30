@@ -163,10 +163,10 @@ public class GameController : MonoBehaviour
         this._activePlayer.UpdateRoutine(Time.deltaTime);
         if (this._beatIsSet)
         {
-            float beatBarrGain = 0.75F;
+            float beatBarrGain = 0.5F;
             if (this._musicCoordinatesPlayed.GetBeats() == 0)
             {
-                beatBarrGain = 1.0F;
+                beatBarrGain = 0.75F;
                 if (!this._roundStarted)
                 {
                     this._roundStarted = true;

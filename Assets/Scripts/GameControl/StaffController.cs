@@ -35,6 +35,12 @@ public class StaffController : MonoBehaviour
     public GameObject staffBackground = null;
     public GameObject beat32Bar = null;
     
+    public GameObject topLeftBone = null;
+    public GameObject topRightBone = null;
+    public GameObject bottomBone = null;
+
+    private SpriteRenderer _staffSpriteRenderer = null;
+    private SpriteRenderer _beatButtonSpriteRender = null;
 
     private float _beatButtonOffset = 0.1F;
     private float _beatButtonWidth = 0.0F;
@@ -48,6 +54,7 @@ public class StaffController : MonoBehaviour
     private FieldContainer _parentScript;
 
     private Vector3 _spawnPosition = Vector3.zero;
+    private Vector3 globalSpawn = Vector3.zero;
 
     private SynthInstrument _staffInstrument;
     private bool _trueNote = false;
@@ -99,34 +106,38 @@ public class StaffController : MonoBehaviour
         this._beatButtonWidth = (1 - this._beatButtonOffset) * Mathf.Min(newBeatButtonWidth, inBeatButtonMaxWidth);
 
 
-        SpriteRenderer staffSpriteRenderer = staffBackground.GetComponent<SpriteRenderer>();
-        float newScaleWidth = (1 - this._spriteOffset) * this._staffWidth / staffSpriteRenderer.sprite.bounds.size.x;
-        float newScaleHeight = this._staffHeight / staffSpriteRenderer.sprite.bounds.size.y;
+        this._staffSpriteRenderer = staffBackground.GetComponent<SpriteRenderer>();
+        float newScaleWidth = (1 - this._spriteOffset) * this._staffWidth / this._staffSpriteRenderer.sprite.bounds.size.x;
+        float newScaleHeight = this._staffHeight / this._staffSpriteRenderer.sprite.bounds.size.y;
 
-        staffSpriteRenderer.color = new UnityEngine.Color(0.6f, 0.4f, 0.3f, 0.6f);
-        staffSpriteRenderer.sortingLayerName = "Staffs";
-        staffSpriteRenderer.sortingOrder = 0;
+        UnityEngine.Color tmpColor = this._staffSpriteRenderer.color;
 
+        tmpColor.a = 0.0F;
+
+        this._staffSpriteRenderer.color = tmpColor;
+        this._staffSpriteRenderer.sortingLayerName = "Staffs";
+        this._staffSpriteRenderer.sortingOrder = 0;
+
+        
 
         this._backgroundTargetScale = new Vector3(newScaleWidth, newScaleHeight, 0.0F);
         staffBackground.transform.localScale = Vector3.zero;
         staffBackground.transform.localPosition = Vector3.zero;
 
-        SpriteRenderer beatButtonSpriteRender = beatButton.GetComponent<SpriteRenderer>();
-        beatButtonSpriteRender.sortingLayerName = "Staffs";
-        beatButtonSpriteRender.sortingOrder = 1;
+        this._beatButtonSpriteRender = beatButton.GetComponent<SpriteRenderer>();
+        this._beatButtonSpriteRender.sortingLayerName = "Pucks";
+        this._beatButtonSpriteRender.sortingOrder = 3;
         
 
         float beatButtonY = -(1 - this._beatButtonOffset) * this._staffHeight / 2.0F + this._beatButtonWidth / 2.0F;
         
         this.beatButton.transform.parent = this.gameObject.transform;
-        this._beatButtonScale = 0.30F * (this._beatButtonWidth / beatButtonSpriteRender.sprite.bounds.size.x);
+        this._beatButtonScale = 0.30F * (this._beatButtonWidth / this._beatButtonSpriteRender.sprite.bounds.size.x);
 
         beatButton.transform.localScale = new Vector3(this._beatButtonScale, this._beatButtonScale, 0);
         this._beatButtonTargetPosition = new Vector2(0, beatButtonY);
         this.beatButton.transform.localPosition = Vector3.zero;
-
-
+        
         this._totalDistance = Vector3.Distance(this._beatButtonTargetPosition, this._spawnPosition);
         this._winDistance = this._totalDistance * this._parentScript.GetWinDistanceCoef();
         Debug.Log($"win distance{this._winDistance} total distance {this._totalDistance} coef {this._parentScript.GetWinDistanceCoef()}");
@@ -264,15 +275,19 @@ public class StaffController : MonoBehaviour
     void Update()
     {
 
-        SpriteRenderer beatButtonSpriteRender = beatButton.GetComponent<SpriteRenderer>();
-        UnityEngine.Color tmpColor = beatButtonSpriteRender.color;
-
-        //float beatButtonScale = this._beatButtonTargetPosition + this._staffInstrument.GetCurrentAmplitude() * this._beatButtonMaxScale * this._beatButtonScale;
-
-        beatButton.transform.localPosition= new Vector3(0, this._beatButtonTargetPosition.y + +this._staffInstrument.GetCurrentAmplitude() * this._beatButtonMaxScale * this._beatButtonScale, 0);
+        UnityEngine.Color tmpBeatColor = this._beatButtonSpriteRender.color;
 
         if (this._currentState == CurrentState.Playing) {
 
+            beatButton.transform.localPosition = new Vector3(0, this._beatButtonTargetPosition.y + +this._staffInstrument.GetCurrentAmplitude() * this._beatButtonMaxScale * this._beatButtonScale, 0);
+
+            UnityEngine.Color tmpStaffColor = this._staffSpriteRenderer.color;
+
+            if (tmpStaffColor.a < 0.7F)
+            {
+                tmpStaffColor.a += Time.deltaTime;
+                this._staffSpriteRenderer.color = tmpStaffColor;
+            }
 
             GameObject nextVisiblePuck;
             bool hasVisiblePuckToPeek = this._currentVisiblePucks.TryPeek(out nextVisiblePuck);
@@ -323,14 +338,22 @@ public class StaffController : MonoBehaviour
                 this.SetState(CurrentState.Playing);
             }
 
-            tmpColor.a = 0.7F + this._parentScript.GetPhase() * 0.3F;
-            beatButtonSpriteRender.color = tmpColor;
+            tmpBeatColor.a = 1.0F;
+            this._beatButtonSpriteRender.color = tmpBeatColor;
+
+            UnityEngine.Color tmpStaffColor = this._staffSpriteRenderer.color;
+
+            if (tmpStaffColor.a > 0.0F)
+            {
+                tmpStaffColor.a -= Time.deltaTime;
+                this._staffSpriteRenderer.color = tmpStaffColor;
+            }
 
         }
 
         if (this._currentState == CurrentState.Orbiting) {
-            tmpColor.a = this._parentScript.GetPhase() * 0.7F;
-            beatButtonSpriteRender.color = tmpColor;
+            tmpBeatColor.a = 0.4F;
+            this._beatButtonSpriteRender.color = tmpBeatColor;
         }
     }
 
@@ -446,6 +469,9 @@ public class StaffController : MonoBehaviour
         if (inCurrentState == CurrentState.Playing)
         {
             this._staffCollider.enabled = true;
+            
+            this.topLeftBone.transform.localPosition = new Vector3(this._spawnPosition.x/this.staffBackground.transform.localScale.x - this._spriteOffset / 2.0F, this._spawnPosition.y / this.staffBackground.transform.localScale.y,0.0F);
+            this.topRightBone.transform.localPosition = new Vector3(this._spawnPosition.x / this.staffBackground.transform.localScale.x + this._spriteOffset / 2.0F, this._spawnPosition.y / this.staffBackground.transform.localScale.y, 0.0F); ;
         }
         else {
             this._staffCollider.enabled = false;

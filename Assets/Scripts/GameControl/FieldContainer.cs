@@ -48,7 +48,7 @@ public class FieldContainer : MonoBehaviour
     private float _staffWidth = 0.0F;
 
     private float _staffTopOffset = 0.2F;
-    private float _spawnWidthCoef = 0.3F;
+    private float _spawnWidthCoef = 0.1F;
 
     private Vector2 _worldSize;
 
@@ -127,10 +127,6 @@ public class FieldContainer : MonoBehaviour
 
         if (this._currentState == CurrentState.Orbiting) {
 
-            MovingAlongStaff movingAlongStaffScript = this.GetComponent<MovingAlongStaff>();
-            if (movingAlongStaffScript != null) { 
-                this._phase = movingAlongStaffScript.GetPhase();
-            }
             this._currentTime += Time.deltaTime;
             float orbitingPhase = Mathf.Lerp((float)(-Math.PI),(float)(Math.PI),(float)(this._currentTime/(this._controller.GetBeatLentgthSec() * this._beatsPerBarr)));
             if (Math.Round(orbitingPhase,4)==Math.Round(Math.PI,4)) {
@@ -139,8 +135,8 @@ public class FieldContainer : MonoBehaviour
 
             for (int i=0; i<this._playableStaffs.Length; i++) {
                 
-                float newX = this._phase * (float)Math.Sin(this._startAngle[i] + orbitingPhase);
-                float newY = this._phase * (float)Math.Cos(this._startAngle[i] + orbitingPhase);
+                float newX = (float)Math.Sin(this._startAngle[i] + orbitingPhase);
+                float newY = (float)Math.Cos(this._startAngle[i] + orbitingPhase);
 
                 this._playableStaffs[i].transform.position = new Vector3(newX, newY, 0.0F);
             }
@@ -307,11 +303,6 @@ public class FieldContainer : MonoBehaviour
         this._currentState = inCurrentState;
         this._currentTime = 0.0F;
         if (this._currentState == CurrentState.Orbiting) {
-            MovingAlongStaff movingScript = this.GetComponent<MovingAlongStaff>();
-            if (movingScript == null)
-            {
-                movingScript = this.transform.AddComponent<MovingAlongStaff>();
-            }
 
             for (int i = 0; i < this._playableStaffs.Length; i++)
             {
@@ -321,14 +312,10 @@ public class FieldContainer : MonoBehaviour
 
             this.transform.localPosition = new Vector3(0.0F, 1.0F, 0.0F);
 
-            movingScript.SetObjectMove(new Vector3(1.0F, 1.0F, 0.0F), Vector2.zero, this._partStaffData.GetBeat32sCount() * (float)this._controller.GetBeat32LentgthSec(),this._controller);
+            
         }
         if (this._currentState == CurrentState.Dismiss) {
-            MovingAlongStaff movingScript = this.GetComponent<MovingAlongStaff>();
-            if (movingScript != null)
-            {
-                Destroy(this.transform.GetComponent<MovingAlongStaff>());
-            }
+
 
             for (int i = 0; i < this._playableStaffs.Length; i++)
             {
@@ -343,10 +330,7 @@ public class FieldContainer : MonoBehaviour
         }
         if (this._currentState == CurrentState.Moving) {
 
-            MovingAlongStaff movingScript = this.GetComponent<MovingAlongStaff>();
-            if (movingScript != null) {
-                Destroy(this.transform.GetComponent<MovingAlongStaff>());
-            }
+
             this.transform.localScale = new Vector3(1.0F, 1.0F, 0.0F);
 
             for (int i = 0; i < this._playableStaffs.Length; i++)

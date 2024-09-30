@@ -165,13 +165,80 @@ TextureImporter:
       outline: []
       physicsShape: []
       tessellationDetail: 0
-      bones: []
+      bones:
+      - name: BottomBone
+        guid: ab36cf01149879d448e8a3b435845b19
+        position: {x: 5.0522513, y: 6.2203946, z: 0}
+        rotation: {x: 0, y: 0, z: -0.0023795885, w: 0.9999972}
+        length: 245.60626
+        parentId: -1
+        color:
+          serializedVersion: 2
+          rgba: 4278190335
+      - name: TopLeftBone
+        guid: 964edda3b24fecc4ea38330b5ef3eef7
+        position: {x: 0.3796522, y: 255.32831, z: 0}
+        rotation: {x: 0, y: 0, z: -0.7187889, w: 0.69522846}
+        length: 8.765973
+        parentId: -1
+        color:
+          serializedVersion: 2
+          rgba: 4278255615
+      - name: TopRightBone
+        guid: 40d27f8d545e5df4990d6d1cd48d7730
+        position: {x: 255.9124, y: 255.9124, z: 0}
+        rotation: {x: 0, y: 0, z: -0.7295144, w: 0.68396544}
+        length: 9.071983
+        parentId: -1
+        color:
+          serializedVersion: 2
+          rgba: 4278255360
       spriteID: 2d009a6b596c7d760800000000000000
       internalID: 7482667652216324306
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+      vertices:
+      - {x: 0, y: 0}
+      - {x: 256, y: 0}
+      - {x: 0, y: 256}
+      - {x: 256, y: 256}
+      indices: 000000000200000001000000010000000200000003000000
+      edges:
+      - {x: 0, y: 1}
+      - {x: 0, y: 2}
+      - {x: 1, y: 3}
+      - {x: 2, y: 3}
+      weights:
+      - weight[0]: 1
+        weight[1]: 0
+        weight[2]: 0
+        weight[3]: 0
+        boneIndex[0]: 0
+        boneIndex[1]: 0
+        boneIndex[2]: 0
+        boneIndex[3]: 0
+      - weight[0]: 1
+        weight[1]: 0
+        weight[2]: 0
+        weight[3]: 0
+        boneIndex[0]: 0
+        boneIndex[1]: 0
+        boneIndex[2]: 0
+        boneIndex[3]: 0
+      - weight[0]: 1
+        weight[1]: 0
+        weight[2]: 0
+        weight[3]: 0
+        boneIndex[0]: 1
+        boneIndex[1]: 0
+        boneIndex[2]: 0
+        boneIndex[3]: 0
+      - weight[0]: 1
+        weight[1]: 0
+        weight[2]: 0
+        weight[3]: 0
+        boneIndex[0]: 2
+        boneIndex[1]: 0
+        boneIndex[2]: 0
+        boneIndex[3]: 0
     outline: []
     physicsShape:
     - - {x: -128, y: 128}

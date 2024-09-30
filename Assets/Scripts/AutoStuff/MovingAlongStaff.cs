@@ -79,8 +79,7 @@ public class MovingAlongStaff : MonoBehaviour
     void Update()
     {
         
-        this._currentScaleCoef += Time.deltaTime;
-        //this._rb.velocity = new Vector3(this.accelerationX * _currentScaleCoef, this.accelerationY * _currentScaleCoef, 0);
+        
 
         float distanceX = this._destinationX - this._startX;
         float distanceY = this._destinationY - this._startY;
@@ -112,7 +111,7 @@ public class MovingAlongStaff : MonoBehaviour
     }
 
     private float GetNewMovingValue(float inTargetMovin, float inPhase) {
-        return inTargetMovin * Mathf.Pow(inPhase, 2);
+        return inTargetMovin * MathF.Pow(inPhase,2);
     }
 
     public float GetPhase() {
