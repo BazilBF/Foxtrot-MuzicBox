@@ -6,13 +6,14 @@ Current stage of development: implementation of saving user progress and statist
 
 [Actual Videos]
 
-Game loop example: https://www.youtube.com/watch?v=6AOiqpeGaCM
+Game loop example: https://www.youtube.com/watch?v=vuVcF3qREP4
+
 Video explanation:
 - Game: gets list of all json music level files in appropriate folder in Streaming Assets and displays them in main menu. Each music level has a certain goal to destroy enemy (implemented) or play through track (TBD). 
 - Player: can choose level, see its current stats, choose difficulty level. On difficulty level depends how far can see player, how beat puck are swpanes (for example at easy level only on one lane beat puck can be spawned), what beat pucks are spawned and their spawn chances).
 - Player: Starts the level
 - Game: from JSON file gets music structure and all music parts and instrumens. From begining is loaded intro part of music level and elso prepared next part, which is seen by player as in the background, while playing.
-- Player: after closing promt with instructions unpause prepared level. Player see music highway (each lane is separate music instrument), on its lane beat pucks are spawned. If player clicks/presses correct correct key in time in "destroy" enemy gets damage, otherwise -player gets damage. Bonus beat if engaged correctly can replenish player health. Player has ability to use two skills: lulabely and nightcore.
+- Player: after closing promt with instructions unpause prepared level. Player see music highway (each lane is separate music instrument), on its lane beat pucks are spawned. If player clicks/presses correct correct key in time in "destroy" enemy gets damage, otherwise -player gets damage. Bonus beat if engaged correctly can replenish player health. Player has ability to use two skills: lulabely and nightcore. Top left of the screen is player's health bar on right side is enemy's
 - Game: spawn beats and prepares new parts until enemy destroyed. It cicles music parts until level goal is cleared or player run out of health. If player engage note correctly game plays true note otherwise it plays false note (except for bonus note). If player tapped on mine note, nothing played but player gets damage. After goal cleared (at "destroy" level enemy health is depleted) gamed spawns only bonus pucks and after all prepared parts are played, game loads outro.
 
 
@@ -45,5 +46,6 @@ Video explanation:
 
 
 [Archived videos]
+ https://www.youtube.com/watch?v=6AOiqpeGaCM
 example of fail gameplay [https://youtu.be/BXhWQPKjPS0](https://youtu.be/mY554DiK4KY)
 example of almost win (all goals are cleared until music ends all notes are become a bonus ones) and both skills [https://youtu.be/nEDgIFQN1dk](https://youtu.be/nEDgIFQN1dk)
