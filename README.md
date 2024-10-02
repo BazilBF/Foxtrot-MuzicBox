@@ -6,7 +6,7 @@ Current stage of development: implementation of saving user progress and statist
 
 [Actual Videos]
 
-Game loop example: https://www.youtube.com/watch?v=vuVcF3qREP4
+Game loop example: https://youtu.be/l3mRmoVUcms
 
 Video explanation:
 - Game: gets list of all json music level files in appropriate folder in Streaming Assets and displays them in main menu. Each music level has a certain goal to destroy enemy (implemented) or play through track (TBD). 
@@ -46,6 +46,7 @@ Video explanation:
 
 
 [Archived videos]
- https://www.youtube.com/watch?v=6AOiqpeGaCM
-example of fail gameplay [https://youtu.be/BXhWQPKjPS0](https://youtu.be/mY554DiK4KY)
-example of almost win (all goals are cleared until music ends all notes are become a bonus ones) and both skills [https://youtu.be/nEDgIFQN1dk](https://youtu.be/nEDgIFQN1dk)
+-https://www.youtube.com/watch?v=vuVcF3qREP4
+-https://www.youtube.com/watch?v=6AOiqpeGaCM
+-example of fail gameplay [https://youtu.be/BXhWQPKjPS0](https://youtu.be/mY554DiK4KY)
+-example of almost win (all goals are cleared until music ends all notes are become a bonus ones) and both skills [https://youtu.be/nEDgIFQN1dk](https://youtu.be/nEDgIFQN1dk)
