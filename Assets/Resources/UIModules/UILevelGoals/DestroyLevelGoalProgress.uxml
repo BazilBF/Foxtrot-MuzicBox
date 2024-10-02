@@ -5,9 +5,9 @@
                 <ui:ProgressBar value="22" name="PlayerHealth" />
             </ui:VisualElement>
             <ui:VisualElement style="flex-grow: 1; width: 60%; flex-direction: row; justify-content: space-between;">
-                <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Score" />
-                <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="BPM" />
-                <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Combo" />
+                <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Score" style="color: rgb(0, 77, 255); font-size: 20px; -unity-font-style: bold;" />
+                <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="BPM" style="font-size: 20px; color: rgb(48, 0, 255); -unity-font-style: bold;" />
+                <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Combo" style="color: rgb(0, 77, 255); -unity-font-style: bold; font-size: 20px;" />
             </ui:VisualElement>
             <ui:VisualElement style="flex-grow: 1; width: 30%;">
                 <ui:ProgressBar value="22" name="EnemyHealth" />

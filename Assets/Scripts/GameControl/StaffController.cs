@@ -87,8 +87,8 @@ public class StaffController : MonoBehaviour
     public void SetStaff(float inStaffWidth, float inStaffHeight, float inBeatButtonMaxWidth, Vector3 inGlobalXSpawnPosition, SynthInstrument inInstrument, int inStaffNumber) {
         this._staffWidth = inStaffWidth;
         this._staffHeight = inStaffHeight;
-        Vector3 localXSpawnPosition = this.transform.InverseTransformPoint(inGlobalXSpawnPosition);
-        this._spawnPosition = new Vector3(localXSpawnPosition.x, this._staffHeight / 2.0F, 0.0F);
+        //Vector3 localXSpawnPosition = this.transform.InverseTransformPoint(inGlobalXSpawnPosition);
+        this._spawnPosition = this.transform.InverseTransformPoint(inGlobalXSpawnPosition);
         this._staffInstrument = inInstrument;
         this._parentScript = this.transform.parent.GetComponent<FieldContainer>();
         this._demoModeFlag = this._parentScript.GetDemoMode();

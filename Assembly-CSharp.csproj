@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\AudioGenerator\SynthInstrument\SynthClick.cs" />
     <Compile Include="Assets\Scripts\GameControl\LevelGoal.cs" />
+    <Compile Include="Assets\Scripts\NetRenderer.cs" />
     <Compile Include="Assets\Scripts\GameControl\FieldContainer.cs" />
     <Compile Include="Assets\Scripts\AudioGenerator\SynthInstrument\Square.cs" />
     <Compile Include="Assets\UI Toolkit\MyCustomEditor.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\GameControl\PuckMove.cs" />
     <Compile Include="Assets\Scripts\UIScript.cs" />
+    <Compile Include="Assets\Scripts\NetRender.cs" />
     <Compile Include="Assets\Scripts\ResultScreenUiScript.cs" />
     <Compile Include="Assets\Scripts\GameControl\LevelProgressController.cs" />
     <Compile Include="Assets\Scripts\AudioGenerator\SynthNote.cs" />

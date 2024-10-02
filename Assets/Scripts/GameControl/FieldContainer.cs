@@ -353,6 +353,7 @@ public class FieldContainer : MonoBehaviour
                 Destroy(this.transform.GetComponent<MovingAlongStaff>());
             }
             this.transform.localScale = new Vector3(1.0F, 1.0F, 0.0F);
+            this.transform.localPosition = new Vector3(0.0F, 0.0F, 0.0F);
         }
     }
 
@@ -424,7 +425,7 @@ public class FieldContainer : MonoBehaviour
                 staffSpawnX += spawnWidthX;
             }
 
-            Vector3 globalSpawnPoint = new Vector3(staffSpawnX, staffPlayY, 0);
+            Vector3 globalSpawnPoint = new Vector3(staffSpawnX, this._controller.GetHorizonLevel()+0.1F, 0);
 
             this._playingCoordinates[i] = new Vector3(staffPlayX, staffPlayY, 0);
 

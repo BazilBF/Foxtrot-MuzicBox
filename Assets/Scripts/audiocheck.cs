@@ -50,6 +50,7 @@ public class GameController : MonoBehaviour
     private int _activeGameFieldBeat32sCount = 0;
 
     private GameObject _nextGameField = null;
+    public GameObject _Grid = null;
 
     private float _gameWorldWidth = 0.0F;
     private float _gameWorldHeight = 0.0F;
@@ -97,6 +98,8 @@ public class GameController : MonoBehaviour
     private AudioSource _audioSource;
     private float _currentGain;
 
+    private float _horizonHeight = 0.7F;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -138,6 +141,10 @@ public class GameController : MonoBehaviour
         this.SetGameWorldSize();
 
         this._activeGameField = Instantiate(this.gameFieldPrefab, this.transform);
+
+        if (this._Grid != null) {
+            this._Grid.GetComponent<NetRenderer>().SetNetRenderer(20,0.8F,new Vector2(-1.0F*this._gameWorldWidth/2.0F,this.GetHorizonLevel()), this._gameWorldWidth, GetHorizonLevel() + (this._gameWorldHeight/2.0f), UnityEngine.Color.red, UnityEngine.Color.blue, 10.0f*(float)this.GetBeat32LentgthSec());
+        }
 
         FieldContainer activeFieldContainerScript = this._activeGameField.GetComponent<FieldContainer>();
         this._activeGameMusicBox = activeFieldContainerScript.SetPartStaffData(this._activePartStaffsData);
@@ -275,6 +282,10 @@ public class GameController : MonoBehaviour
 
     public float GetGUIOffset() {
         return this._offsetGUI;
+    }
+
+    public float GetHorizonLevel() { 
+        return (this._gameWorldHeight * this._horizonHeight) / 2.0F;
     }
 
     public int GetBeatsPerBarr() {
@@ -495,7 +506,11 @@ public class GameController : MonoBehaviour
                 this._deltaChangeSpeedPerSecond = 0.0F;
                 this._currentSpeedCoef = this._speedCoef;
             }
-            
+            if (this._Grid != null) {
+                this._Grid.GetComponent<NetRenderer>().SetDuration(10.0F*(float)this.GetBeat32LentgthSec());
+            }
+
+
         }
 
         if (this._deltaChangePitchPerSecond != 0.0F)
