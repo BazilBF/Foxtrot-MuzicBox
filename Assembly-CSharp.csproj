@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\GameControl\FieldContainer.cs" />
     <Compile Include="Assets\Scripts\AudioGenerator\SynthInstrument\Square.cs" />
     <Compile Include="Assets\UI Toolkit\MyCustomEditor.cs" />
+    <Compile Include="Assets\Scripts\GameControl\LevelGoal\PlayThroughLevelGoal.cs" />
     <Compile Include="Assets\Scripts\AudioGenerator\SynthInstrument\Sin.cs" />
     <Compile Include="Assets\Scripts\GameControl\StaffController.cs" />
     <Compile Include="Assets\Scripts\GameControl\PlayerSkills.cs" />
@@ -75,7 +76,6 @@
     <Compile Include="Assets\Scripts\AudioGenerator\SynthInstrument.cs" />
     <Compile Include="Assets\Scripts\BeatListner.cs" />
     <Compile Include="Assets\Scripts\AudioGenerator\Metronome.cs" />
-    <Compile Include="Assets\Scripts\GameControl\LevelGoal\PlayTroughLevelGoal.cs" />
     <Compile Include="Assets\Scripts\AutoStuff\BeatPuck.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\AudioGenerator\NewBehaviourScript.cs" />
@@ -90,7 +90,6 @@
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\GameControl\PuckMove.cs" />
     <Compile Include="Assets\Scripts\UIScript.cs" />
-    <Compile Include="Assets\Scripts\NetRender.cs" />
     <Compile Include="Assets\Scripts\ResultScreenUiScript.cs" />
     <Compile Include="Assets\Scripts\GameControl\LevelProgressController.cs" />
     <Compile Include="Assets\Scripts\AudioGenerator\SynthNote.cs" />
@@ -103,6 +102,7 @@
     <None Include="Assets\Resources\ResultMenu.uxml" />
     <None Include="Assets\UI Toolkit\Styles\TestStyle.uss" />
     <None Include="Assets\Resources\MainMenuUi.uxml" />
+    <None Include="Assets\Resources\UIModules\UILevelGoals\PlayLevelGoalProgress.uxml" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

@@ -38,6 +38,7 @@ public class LevelProgressController
         string getGoalType = inRythmLevel.GetGoalType();
         switch (getGoalType) {
             case "Destroy": this._targetGoal = new DestroyLevelGoal(inPlayerInfo, inRythmLevel); break;
+            case "PlayThrough": this._targetGoal = new PlayThroughLevelGoal (inPlayerInfo, inRythmLevel); break;
             default: this._targetGoal = new LevelGoal(inPlayerInfo, inRythmLevel); break;
         }
 

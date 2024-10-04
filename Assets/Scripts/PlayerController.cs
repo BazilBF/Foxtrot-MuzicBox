@@ -15,13 +15,14 @@ public class PlayerController : MonoBehaviour
             this._activePlayer = new Player();
             DontDestroyOnLoad(this.gameObject);
         }
+        this._activePlayer.CheckAndLoadAvaibleLevelMetadata(synthMusicFolder);
     }
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log("PlayerLoaded");
         
-        this._activePlayer.CheckAndLoadAvaibleLevelMetadata(synthMusicFolder);
+        
 
         
 
