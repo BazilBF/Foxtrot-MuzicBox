@@ -140,7 +140,7 @@ public class StaffController : MonoBehaviour
         
         this._totalDistance = Vector3.Distance(this._beatButtonTargetPosition, this._spawnPosition);
         this._winDistance = this._totalDistance * this._parentScript.GetWinDistanceCoef();
-        Debug.Log($"win distance{this._winDistance} total distance {this._totalDistance} coef {this._parentScript.GetWinDistanceCoef()}");
+        
     }
 
     public void SetNextPuckDistance(float inNextPuckDistance, bool inPuckIsVisible) {
@@ -237,7 +237,7 @@ public class StaffController : MonoBehaviour
 
     public void PlayerTaped()
     {
-        Debug.Log($"[Touch Staff][Staff #{this._staffNumber}][{this._currentState}]");
+        
         if (this._currentState == CurrentState.Playing)
         {
             GameObject nextPuck;
@@ -245,7 +245,7 @@ public class StaffController : MonoBehaviour
 
             float nextPuckDistance = this.GetNextPuckDistance(1);
 
-            Debug.Log($"[Touch Staff][Staff #{this._staffNumber}][{hasPuckToPeek}][{nextPuckDistance <= this._totalDistance * 0.95F}]");
+            
 
             if (hasPuckToPeek && nextPuckDistance <= this._totalDistance * 0.95F)
             {

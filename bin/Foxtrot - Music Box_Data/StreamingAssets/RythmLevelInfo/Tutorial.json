@@ -1,0 +1,48 @@
+{
+	"gameName":"Altaisk-27. Restore the harmony",
+	"gameAuthor":"Kuragitsune",
+	"version":0.2,
+	"levels":[
+		{
+			"name":"Test Level 1",
+			"enemyMug":"CatFish",
+			"goalType":"Destroy",
+			"maxPlaybleMelody":4,
+			"maxPlaybleBeat":2,
+			"enemyHealth":100,
+			"surviveTime":0,
+			"goalScore":0,
+			"mineSpawnChance":0.8,
+			"mineDamageMin":2,
+			"mineDamageMax":10,
+			"synthTrack":"TestMusicLvL",
+			"levelStructure":[
+				"Couplet",
+				"Chorus",
+				"Couplet",
+				"Chorus"
+			]
+			
+		},
+		{
+			"name":"Test Level 2",
+			"enemyMug":"CatFish",
+			"goalType":"Destroy",
+			"maxPlaybleMelody":2,
+			"maxPlaybleBeat":2,
+			"enemyHealth":100,
+			"surviveTime":0,
+			"goalScore":0,
+			"mineSpawnChance":0.8,
+			"mineDamageMin":2,
+			"mineDamageMax":10,
+			"synthTrack":"TestMusicLvL",
+			"levelStructure":[
+				"Couplet",
+				"Bridge",
+				"Chorus",
+				"Bridge"
+			]			
+		}
+	]
+}

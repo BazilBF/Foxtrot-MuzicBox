@@ -122,7 +122,7 @@ public class LevelProgressController
             returnMark = 4;
         }
 
-        Debug.Log($"PlayerMark:{returnMark}");
+        
 
         return returnMark;
     }

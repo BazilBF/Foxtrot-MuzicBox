@@ -3,6 +3,7 @@
         <ui:VisualElement name="VisualElement" style="flex-grow: 1; height: 10%; flex-direction: row; justify-content: space-between;">
             <ui:Button text="Stats" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StatsButton" />
             <ui:Button text="Settings" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SettingsButton" />
+            <ui:Button text="Exit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="QuitBtn" />
         </ui:VisualElement>
         <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="AlwaysVisible" name="ChooseLevel" style="height: 90%;" />
         <ui:VisualElement name="LoadLevel" style="flex-grow: 1; position: absolute; width: 100%; height: 100%; background-color: rgba(94, 94, 94, 0.6); margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; display: none;">

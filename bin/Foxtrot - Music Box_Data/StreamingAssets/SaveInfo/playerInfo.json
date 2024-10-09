@@ -1,0 +1,11 @@
+{
+	"playerName":"TestSubject",
+	"playerXP":0,
+	"playerLevel":1,
+	"playerScore":0,
+	"currentLevel":0,
+	"unlockedLevels":[true,false],
+	"skillStatus":[true,true],
+	"maxScoreLevells":[0,0],
+	"difficulty":2
+}

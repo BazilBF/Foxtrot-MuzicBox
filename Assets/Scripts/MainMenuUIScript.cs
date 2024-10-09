@@ -45,8 +45,12 @@ public class MainMenuUIScript : MonoBehaviour
         Button backBtn = this._startLevelMenuElement.Query<Button>("BackBtn");
         backBtn.RegisterCallback<ClickEvent>(OnCloseButtonClicked);
 
+
         Button startBtn = this._startLevelMenuElement.Query<Button>("StartBtn");
         startBtn.RegisterCallback<ClickEvent>(OnStartButtonClicked);
+
+        Button exitBtn = this._uiDocument.rootVisualElement.Query<Button>("QuitBtn");
+        exitBtn.RegisterCallback<ClickEvent>(OnExitButtonClicked);
 
         VisualTreeAsset menuElement = Resources.Load<VisualTreeAsset>("UIModules/MenuElement");
         VisualElement chooseLevelElement = this._uiDocument.rootVisualElement.Query("ChooseLevel");
@@ -67,6 +71,10 @@ public class MainMenuUIScript : MonoBehaviour
         }
 
 
+    }
+
+    private void OnExitButtonClicked(ClickEvent inEvent) {
+        Application.Quit();
     }
 
     private void OnCloseButtonClicked(ClickEvent inEvent) {
