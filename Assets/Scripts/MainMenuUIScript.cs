@@ -14,7 +14,10 @@ public class MainMenuUIScript : MonoBehaviour
     private readonly static int _levelScene = 1;
 
     private int _currentLevel;
-    
+
+    private int[] _maxScores;
+    private int[] _playsCnt;
+    private int[] _winsCnt;
 
     // Start is called before the first frame update
     void Start()
@@ -71,19 +74,26 @@ public class MainMenuUIScript : MonoBehaviour
     }
 
     private void OnLevelButtonClicked(ClickEvent inEvent, int inIn) {
-        Label levelName = this._startLevelMenuElement.Query<Label>("LevelName");
-        levelName.text = this._activePlayer.GetLevelName(inIn);
-
-        Label levelGoal = this._startLevelMenuElement.Query<Label>("LevelGoal");
-        levelGoal.text = this._activePlayer.GetLevelGoalType(inIn);
-
-        Label levelDesc = this._startLevelMenuElement.Query<Label>("LevelDesc");
-        levelDesc.text = this._activePlayer.GetLevelDesc(inIn);
-
 
         this._currentLevel = inIn;
+
+        Label levelName = this._startLevelMenuElement.Query<Label>("LevelName");
+        levelName.text = this._activePlayer.GetLevelName(this._currentLevel);
+
+        Label levelGoal = this._startLevelMenuElement.Query<Label>("LevelGoal");
+        levelGoal.text = this._activePlayer.GetLevelGoalType(this._currentLevel);
+
+        Label levelDesc = this._startLevelMenuElement.Query<Label>("LevelDesc");
+        levelDesc.text = this._activePlayer.GetLevelDesc(this._currentLevel);
+               
+
+        this._maxScores = this._activePlayer.GetLevelScores(this._currentLevel);
+        this._playsCnt = this._activePlayer.GetLevelPlaysCnt(this._currentLevel);
+        this._winsCnt = this._activePlayer.GetLevelWinsCnt(this._currentLevel);
+
         RadioButtonGroup difficultyRadioGroup = this._startLevelMenuElement.Query<RadioButtonGroup>("DifficultyRadioGroup");
         difficultyRadioGroup.RegisterValueChangedCallback(OnDifficultyChanged);
+        this.UpdateScores(0);
         difficultyRadioGroup.value = 0;
         
 
@@ -91,18 +101,14 @@ public class MainMenuUIScript : MonoBehaviour
     }
 
     private void OnDifficultyChanged(ChangeEvent<int> inEvent) {
-        
+        this.UpdateScores(inEvent.newValue);
+    }
 
-
-        int[] maxScores = this._activePlayer.GetLevelScores(this._currentLevel);
-        int[] playsCnt = this._activePlayer.GetLevelPlaysCnt(this._currentLevel);
-        int[] winsCnt = this._activePlayer.GetLevelWinsCnt(this._currentLevel);
-
+    private void UpdateScores(int inDifficulty) {
         Label statsValue = this._startLevelMenuElement.Query<Label>("StatsValue");
-        statsValue.text = $"{winsCnt[inEvent.newValue]}/{playsCnt[inEvent.newValue]}";
+        statsValue.text = $"{this._winsCnt[inDifficulty]}/{this._playsCnt[inDifficulty]}";
         Label scoreValue = this._startLevelMenuElement.Query<Label>("ScoreValue");
-        scoreValue.text = $"{maxScores[inEvent.newValue]}";
-
+        scoreValue.text = $"{this._maxScores[inDifficulty]}";
     }
 
     private void OnStartButtonClicked(ClickEvent inEvent) {

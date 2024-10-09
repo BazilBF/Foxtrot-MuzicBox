@@ -12,7 +12,7 @@
                         <ui:Button text="Fire" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Skill1Btn" enable-rich-text="false" />
                     </ui:VisualElement>
                     <ui:VisualElement style="flex-grow: 1; flex-direction: row; -unity-text-align: upper-left; justify-content: flex-end;">
-                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PauseBtn" />
+                        <ui:Button text="Pause" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PauseBtn" />
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
