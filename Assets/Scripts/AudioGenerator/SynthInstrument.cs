@@ -23,13 +23,14 @@ public class SynthInstrument
     protected float modulatingGaing = 0.0F;
     protected float mFrequency = 7; //frequency for modulating
 
-    protected float atackLength = 0.1F; //length of Atack Phase
-    protected float fadeLength = 0.1F; //length of Fade Phase
+    protected float fadeLength = 2.0F; //length of Fade Phase as a part of Beat
 
     protected static float pulseLength = 0.1F; // lehgth of the pulse
 
     protected bool distortionFlg = true; // apply distortion to frequency
     protected float distortionGain = 0.3F;
+
+    protected bool canSustain = false;
 
     //Internal Settings
     private SynthNote _noteToPlay;
@@ -52,11 +53,8 @@ public class SynthInstrument
 
     protected float _mPhase = 0; //phase for modulating sound
 
-    protected float _currentGainCoef = 1;
-
     protected bool _isPlayingFlg = false; //flag that note is playing
 
-    protected string _beatPhase = "wat";
     protected bool _isBass = false;
 
     public SynthInstrument(float inSampleRate, float ininstrumentGainCoef){
@@ -72,53 +70,46 @@ public class SynthInstrument
             
             
             double currentLength = this._samplesPlayed / (double) this._sampleRate;
+            double fadeLength = inBeatLentgth * this.fadeLength;
             double wholeNoteLength = this._beats * inBeatLentgth;
+            double currentPlayPhase;
+
+            amplitude = this.GetAmplitude();
+
+            if (this.distortionFlg)
+            {
+                amplitude = this.GetdistortionGain(amplitude);
+            }
+
+            if (!this._trueNote)
+            {
+                amplitude = amplitude * (0.8F + 0.2F * (float)SynthInstrument._randObj.NextDouble());
+            }
             
-            if(currentLength > wholeNoteLength){
+            ChangePhase(inPitchCoef);
+            _samplesPlayed++;
 
-                this.ResetPlayParams();
-                //Debug.Log($"Reset");
 
+            if (this.canSustain && currentLength <= wholeNoteLength)
+            {
+                currentPlayPhase = currentLength / wholeNoteLength;
+                amplitude *= this.SustainGain(currentPlayPhase);
+            }
+            else if (currentLength <= wholeNoteLength + fadeLength)
+            {
+
+                currentPlayPhase = (currentLength - (this.canSustain ? wholeNoteLength : 0.0)) / fadeLength;
+                amplitude *= this.FaidGain(currentPlayPhase);
             }
             else {
-
-                MusicCoordinates deltaCoordinates = MusicCoordinates.GetDelta(inMusicCoordinates, this._musicCoordinatesStart);
-                int currentBeat = deltaCoordinates.GetTotalBeat32s();
-                //deltaCoordinates = null;
-
-                if (this.atackLength>0 && currentBeat == 0 && currentLength<=(wholeNoteLength * this.atackLength)){
-                    float attackPhase=(float)(currentLength/(inBeatLentgth * this.atackLength));
-                    this._beatPhase = "Attack";
-                    ModifyAttack(attackPhase);
-                    //Debug.Log($"{inMusicCoordinates.GetTotalSamples()}X{this.musicCoordinatesStart.GetTotalSamples()}|{beatPhase} -> {this.currentGainCoef}");
-                }
-                else if(this.fadeLength>0 && currentBeat == (this._beats-1) && (wholeNoteLength - currentLength) <= (inBeatLentgth * this.fadeLength)){
-                    float fadePhase=1.0F-(float)((wholeNoteLength - currentLength)/(inBeatLentgth * this.fadeLength));
-                    this._beatPhase = "Fade";
-                    ModifyFade(fadePhase);
-                    //Debug.Log($"{inMusicCoordinates.GetTotalSamples()}X{this.musicCoordinatesStart.GetTotalSamples()}|{beatPhase} -> {this.currentGainCoef}");
-                }
-                else{
-                    this._beatPhase = "Sustain";
-                    ModifySustain();
-                    //Debug.Log($"{inMusicCoordinates.GetTotalSamples()}X{this.musicCoordinatesStart.GetTotalSamples()}|{beatPhase} -> {this.currentGainCoef}");
-                }
-
-                amplitude = this.GetAmplitude();
-
-                if (this.distortionFlg) {
-                    amplitude = this.GetdistortionGain(amplitude);
-                }
-
-                if (!this._trueNote) {
-                    amplitude = amplitude * (0.8F + 0.2F*(float)SynthInstrument._randObj.NextDouble());
-                }
-                this._currentAmplitude = amplitude;
-                ChangePhase(inPitchCoef);
-                _samplesPlayed++;
+                this._isPlayingFlg = false;
+                this._currentAmplitude = 0.0F;
             }
-            
+            this._currentAmplitude = amplitude;
+
+
         }
+
         return amplitude;
     }
 
@@ -134,7 +125,6 @@ public class SynthInstrument
         this._nextNoteToPlay = null;
         this._beats = 0;
         this._trueNote = false;
-        this._currentGainCoef = 1;
         this._phase = 0;
 
     }
@@ -148,16 +138,13 @@ public class SynthInstrument
         this._instrumentGainCoef = inNewGain;
     }
 
-    protected virtual void ModifyAttack(float inAttackPhase){
-
+    protected virtual float FaidGain(double inFadePhase){
+        
+        return inFadePhase<1.0F ? 1.0F - (float)inFadePhase : 0.0F;
     }
 
-    protected virtual void ModifySustain(){
-
-    }
-
-    protected virtual void ModifyFade(float inFadePhase){
-
+    protected virtual float SustainGain(double inSustainPhase) {
+        return 1.0F;
     }
 
     protected virtual float GetdistortionGain(float inAmplitude) {
@@ -168,12 +155,19 @@ public class SynthInstrument
     }
 
     protected virtual float GetAmplitude(){
-        float amplitude=SynthInstrument.GetAmplitudeByWave(this._phase, this.waveType) *this.Modulate() * this._instrumentGainCoef * this._currentGainCoef * this._noteToPlay.GetGain();
+        float amplitude=0.0F;
+        try
+        {
+            amplitude = SynthInstrument.GetAmplitudeByWave(this._phase, this.waveType) * this.Modulate() * this._instrumentGainCoef * this._noteToPlay.GetGain();
 
-        if (amplitude>1.0F) {
-            Debug.Log("wat");
+            if (amplitude > 1.0F)
+            {
+                Debug.Log("wat");
+            }
         }
-
+        catch {
+            Debug.Log("Wat");
+        }
         //Debug.Log($"Amplitude = {this.phase}/{amplitude}");
         return amplitude;
     }
@@ -291,7 +285,7 @@ public class SynthInstrument
         return (float)(SynthInstrument._randObj.NextDouble() * 2.0 - 1.0);
     }
 
-    public bool CheckIsPlaying() { 
+    public bool CheckIsPlaying() {
         return this._isPlayingFlg;
     }
 

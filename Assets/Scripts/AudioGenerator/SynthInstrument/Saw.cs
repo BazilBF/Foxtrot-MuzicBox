@@ -9,6 +9,7 @@ public class Saw : SynthInstrument
     public Saw(float inSampleRate, float ininstrumentGainCoef) : base(inSampleRate, ininstrumentGainCoef)
     {
         this.waveType = Wave.Saw;
+        this.canSustain = true;
         this.modulatingGaing = 0.0F;
         this.distortionFlg = false;
 
