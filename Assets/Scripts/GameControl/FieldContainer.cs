@@ -21,13 +21,13 @@ public class FieldContainer : MonoBehaviour
         private MusicCoordinates _musicCoordinates;
         private bool _beatOffsetPlayed;
 
-        public FieldMessageParams(MusicCoordinates inMusicCoordinates, bool inBeatOffsetPlayed) { 
+        public FieldMessageParams(MusicCoordinates inMusicCoordinates, bool inBeatOffsetPlayed) {
             this._beatOffsetPlayed = inBeatOffsetPlayed;
             this._musicCoordinates = inMusicCoordinates;
         }
 
         public MusicCoordinates GetMusicCoordinates() { return _musicCoordinates; }
-        public bool GetBeatOffsetPlayed() {  return _beatOffsetPlayed; }
+        public bool GetBeatOffsetPlayed() { return _beatOffsetPlayed; }
     }
 
     public GameObject background = null;
@@ -61,18 +61,20 @@ public class FieldContainer : MonoBehaviour
     private float _currentTime = 0.0F;
     private float _winDistanceCoef = 0.25F;
     private float _phase = 1.0F;
-    
+
     private int _beatsPerBarr;
 
     private int[] _mineCoolDown;
     private int[] _mineCoolDownLimit;
-    
+
     private int[] _noteCount;
 
     private readonly System.Random _rand = new System.Random();
 
     private Player _activePlayer;
     private Player.Difficulty _currentDifficulty;
+
+    private MusicBox _musicBox;
 
     public CurrentState _currentState = CurrentState.Orbiting;
 
@@ -116,7 +118,7 @@ public class FieldContainer : MonoBehaviour
         }
 
 
-        
+
     }
 
     // Update is called once per frame
@@ -128,19 +130,19 @@ public class FieldContainer : MonoBehaviour
         if (this._currentState == CurrentState.Orbiting) {
 
             this._currentTime += Time.deltaTime;
-            float orbitingPhase = Mathf.Lerp((float)(-Math.PI),(float)(Math.PI),(float)(this._currentTime/(this._controller.GetBeatLentgthSec() * this._beatsPerBarr)));
-            if (Math.Round(orbitingPhase,4)==Math.Round(Math.PI,4)) {
+            float orbitingPhase = Mathf.Lerp((float)(-Math.PI), (float)(Math.PI), (float)(this._currentTime / (this._controller.GetBeatLentgthSec() * this._beatsPerBarr)));
+            if (Math.Round(orbitingPhase, 4) == Math.Round(Math.PI, 4)) {
                 this._currentTime = 0.0f;
             }
 
-            for (int i=0; i<this._playableStaffs.Length; i++) {
-                
+            for (int i = 0; i < this._playableStaffs.Length; i++) {
+
                 float newX = (float)Math.Sin(this._startAngle[i] + orbitingPhase);
                 float newY = (float)Math.Cos(this._startAngle[i] + orbitingPhase);
 
                 this._playableStaffs[i].transform.position = new Vector3(newX, newY, 0.0F);
             }
-        }        
+        }
 
         if (this._currentState == CurrentState.Moving || this._currentState == CurrentState.Dismiss) {
 
@@ -169,7 +171,7 @@ public class FieldContainer : MonoBehaviour
                 this.SetState(CurrentState.Playing);
             }
 
-            
+
         }
 
         if (this._currentState == CurrentState.Playing) {
@@ -180,7 +182,7 @@ public class FieldContainer : MonoBehaviour
 
     private void ProcessInput() {
         string[] staffsKeys = this._activePlayer.GetStaffsKeys();
-        for (int i=0; i < this._playableStaffs.Length; i++) {
+        for (int i = 0; i < this._playableStaffs.Length; i++) {
             if (Input.GetKeyDown(staffsKeys[i])) {
                 this._playableStaffs[i].GetComponent<StaffController>().PlayerTaped();
             }
@@ -191,7 +193,7 @@ public class FieldContainer : MonoBehaviour
         {
             if (Input.GetKeyDown(skillsKeys[i]))
             {
-                this._activePlayer.ToggleSkill(i) ;
+                this._activePlayer.ToggleSkill(i);
             }
         }
 
@@ -206,7 +208,7 @@ public class FieldContainer : MonoBehaviour
         {
             if (touch.phase == TouchPhase.Began)
             {
-                
+
 
                 Vector3 touchPosWorld = Camera.main.ScreenToWorldPoint(touch.position);
 
@@ -234,11 +236,7 @@ public class FieldContainer : MonoBehaviour
         return this._controller.GetBeatLentgthSec();
     }
 
-    public MusicBox SetPartStaffData(GameData.PartStaffsData inPartStaffData) {
-        this._partStaffData = inPartStaffData;
-        this._name = this._partStaffData.GetPartStaffDataName();
-        return this.SetStaffs();
-    }
+
 
     public string getPartStaffData() {
         return this._name;
@@ -312,7 +310,7 @@ public class FieldContainer : MonoBehaviour
 
             this.transform.localPosition = new Vector3(0.0F, 1.0F, 0.0F);
 
-            
+
         }
         if (this._currentState == CurrentState.Dismiss) {
 
@@ -357,8 +355,10 @@ public class FieldContainer : MonoBehaviour
         }
     }
 
-    private MusicBox SetStaffs()
+    public FieldContainer SetPartStaffData(GameData.PartStaffsData inPartStaffData)
     {
+        this._partStaffData = inPartStaffData;
+        this._name = this._partStaffData.GetPartStaffDataName();
 
         SpriteRenderer staffSpriteRenderer = this.background.GetComponent<SpriteRenderer>();
         float backGroundWidth = staffSpriteRenderer.sprite.bounds.size.x * this.background.transform.localScale.x;
@@ -398,17 +398,19 @@ public class FieldContainer : MonoBehaviour
         this._mineCoolDownLimit = new int[playableIntsrumentsCount];
         this._noteCount = new int[playableIntsrumentsCount];
 
+        Dictionary<string, WaveForm.WaveFormSettings> waveFormsDict = this._controller.GetWaveFormSettings();
+
         for (int i = 0; i < playableIntsrumentsCount; i++)
         {
 
             float instrumentGain = playableStaffs[i].GetInstrumentGain();
             string instrument = playableStaffs[i].GetInstrument();
-            allSynthIntstruments[i] = MusicBox.GetSynthInstrument(instrument, this._sampleRate, instrumentGain);
+            allSynthIntstruments[i] = MusicBox.GetSynthInstrument(instrument, this._sampleRate, instrumentGain, (waveFormsDict.ContainsKey(instrument) ? waveFormsDict[instrument] : null));
             allInstrumentsGaings[i] = instrumentGain;
 
             this._mineCoolDownLimit[i] = 0;
             this._mineCoolDown[i] = 0;
-            this._noteCount[i]= 0;
+            this._noteCount[i] = 0;
 
 
             float spawnWidthX = this._staffWidth * this._spawnWidthCoef;
@@ -425,11 +427,11 @@ public class FieldContainer : MonoBehaviour
                 staffSpawnX += spawnWidthX;
             }
 
-            Vector3 globalSpawnPoint = new Vector3(staffSpawnX, this._controller.GetHorizonLevel()+0.1F, 0);
+            Vector3 globalSpawnPoint = new Vector3(staffSpawnX, this._controller.GetHorizonLevel() + 0.1F, 0);
 
             this._playingCoordinates[i] = new Vector3(staffPlayX, staffPlayY, 0);
 
-            this._startAngle[i] = (float)Math.PI*deltaAngle * i/180.0F;
+            this._startAngle[i] = (float)Math.PI * deltaAngle * i / 180.0F;
 
             float staffOrbitStartX = (float)Math.Sin(this._startAngle[i]);
             float staffOrbitStartY = (float)Math.Cos(this._startAngle[i]);
@@ -451,7 +453,7 @@ public class FieldContainer : MonoBehaviour
             }
 
 
-            script.SetStaff(this._staffWidth, this._staffHeight, maxBeatButtonWidth, globalSpawnPoint, allSynthIntstruments[i],i);
+            script.SetStaff(this._staffWidth, this._staffHeight, maxBeatButtonWidth, globalSpawnPoint, allSynthIntstruments[i], i);
             this._playableStaffs[i] = newStaff;
         }
         for (int i = 0; i < unPlayableIntsrumentsCount; i++)
@@ -460,13 +462,36 @@ public class FieldContainer : MonoBehaviour
             string instrument = unPlayableStaffs[i].GetInstrument();
             int yIterator = playableIntsrumentsCount + i;
 
-            SynthInstrument unPlayableIntstrument = MusicBox.GetSynthInstrument(instrument, this._sampleRate, instrumentGain);
+            SynthInstrument unPlayableIntstrument = MusicBox.GetSynthInstrument(instrument, this._sampleRate, instrumentGain, (waveFormsDict.ContainsKey(instrument) ? waveFormsDict[instrument] : null));
             _unPlayableInstruments[i] = unPlayableIntstrument;
             allSynthIntstruments[yIterator] = unPlayableIntstrument;
             allInstrumentsGaings[yIterator] = instrumentGain;
         }
 
-            return new MusicBox(allSynthIntstruments, this._controller.GetMaxInstrumentsGain(), this._sampleRate);
+        this._musicBox = new MusicBox(allSynthIntstruments, this._controller.GetMaxInstrumentsGain(), this._sampleRate);
+
+        return this;
+    }
+
+    public MusicBox GetMusicBox() {
+        return this._musicBox;
+    }
+
+    public bool CheckIsReadyToChange()
+    {
+        return this._musicBox.CheckIsReadyToChange() && (!this.CheckBeatsPucks()) ;
+    }
+
+    public bool CheckIsPlaying() { 
+        return this._musicBox.CheckIsPlaying() ;
+    }
+
+    public void NextNoteStroke(MusicCoordinates inMusicCoordinates) {
+        this._musicBox.NextNoteStroke(inMusicCoordinates);
+    }
+
+    public float playNotes(MusicCoordinates inMusicCoordinates, double inBeatLentgth, float inMetronomeGain, float inPitchCoef = 1.0F) {
+        return this._musicBox.playNotes(inMusicCoordinates, inBeatLentgth, inMetronomeGain, inPitchCoef);
     }
 
     public void SpawnBeatBarr(float inBeatBarrGain) {

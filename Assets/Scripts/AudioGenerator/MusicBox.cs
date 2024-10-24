@@ -2,9 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static WaveForm;
 
 public class MusicBox 
 {
+
+    public static readonly string[] standartInstruments = new string[] { "Click", "Saw", "Sin", "Square" };
+
     private readonly float _sampleRate;
 
     private SynthInstrument[] _musicBoxInstruments;
@@ -14,6 +18,8 @@ public class MusicBox
     private float _totalGain = 0.0F;
 
     private int _instrumentsCount = 0;
+
+    private Dictionary<string,WaveForm.WaveFormSettings> _waveFormSettings = null;
 
     public MusicBox(string[] inInstruments, float inTotalInstrumentsGain, float inSampleRate)
     {
@@ -25,6 +31,7 @@ public class MusicBox
         this._musicBoxMethronome = new SynthClick(this._sampleRate, 1.0F);
 
         this._totalGain = inTotalInstrumentsGain + 1.0F; //1.0F - for methronome
+        
     }
 
     public MusicBox(SynthInstrument[] inInstruments, float inTotalInstrumentsGain, float inSampleRate)
@@ -37,9 +44,11 @@ public class MusicBox
 
         this._musicBoxMethronome = new SynthClick(this._sampleRate, 1.0F);
 
+        
+
     }
 
-    public static SynthInstrument GetSynthInstrument(string inInstrument, float inSampleRate, float inInstrumentsGain) {
+    public static SynthInstrument GetSynthInstrument(string inInstrument, float inSampleRate, float inInstrumentsGain, WaveForm.WaveFormSettings inWaveFormSettings) {
         SynthInstrument returnSynthInstrument;
         switch (inInstrument)
         {
@@ -52,7 +61,7 @@ public class MusicBox
             case "Square":
                 returnSynthInstrument = new Square(inSampleRate, inInstrumentsGain); break;
             default:
-                returnSynthInstrument = new SynthInstrument(inSampleRate, inInstrumentsGain); break;
+                returnSynthInstrument = new WaveForm(inWaveFormSettings, inSampleRate, inInstrumentsGain); break;
         }
         return returnSynthInstrument;
     }
@@ -64,6 +73,20 @@ public class MusicBox
         for (int i=0; i < this._instrumentsCount; i++) {
             
             if (this._musicBoxInstruments[i].CheckIsPlaying()) {
+                isPlaying = true; break;
+            }
+        }
+        return isPlaying;
+    }
+
+    public bool CheckIsReadyToChange()
+    {
+        bool isPlaying = false;
+        for (int i = 0; i < this._instrumentsCount; i++)
+        {
+
+            if (this._musicBoxInstruments[i].CheckIsReadyToChange())
+            {
                 isPlaying = true; break;
             }
         }

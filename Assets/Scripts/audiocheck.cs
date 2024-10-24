@@ -1,11 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Policy;
+using System.Threading.Tasks;
 
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using UnityEngine.Windows;
 
 public class GameController : MonoBehaviour
 {
@@ -43,8 +48,8 @@ public class GameController : MonoBehaviour
     private GameData.PartStaffsData _activePartStaffsData;
     private GameData.PartStaffsData _nextPartStaffsData;
 
-    private MusicBox _activeGameMusicBox;
-    private MusicBox _nextGameMusicBox;
+    private FieldContainer _fieldContainer;
+
 
     private GameObject _activeGameField = null;
     private int _activeGameFieldBeat32sCount = 0;
@@ -67,7 +72,7 @@ public class GameController : MonoBehaviour
     private int _beatOffset = 6;
 
     private bool _beatOffsetPlayed = false;
-
+    private bool _SettingsIsLoaded = false;
 
     private float _offsetGUI = 0.15F;
     private int _measure = 3;
@@ -93,7 +98,7 @@ public class GameController : MonoBehaviour
     private int _maxInstrumentsCount = 0;
     private float _maxInstrumentsGain = 0.0F;
 
-
+    private Dictionary<string, WaveForm.WaveFormSettings> _waveFormSettings = new Dictionary<string, WaveForm.WaveFormSettings>(); 
 
     private AudioSource _audioSource;
     private float _currentGain;
@@ -122,6 +127,14 @@ public class GameController : MonoBehaviour
 
 
         this._activeLevel = GameData.RythmLevel.LoadSynthTrack(this._activePlayer.GetCurrentLevelFileName());
+
+        StringCollection uniqueInstruments = this._activeLevel.GetUniqueInstruments();
+        for (int i=0; i < uniqueInstruments.Count; i++) {
+            if (Array.IndexOf(MusicBox.standartInstruments, uniqueInstruments[i])<0) {
+                _waveFormSettings[uniqueInstruments[i]] = WaveForm.LoadInstrumentData(uniqueInstruments[i],this);
+            }
+        }
+
         this._maxInstrumentsCount = this._activeLevel.GetMaxInstrumentsCount();
         this._maxInstrumentsGain = this._activeLevel.GetMaxInstrumentsGain();
 
@@ -147,7 +160,7 @@ public class GameController : MonoBehaviour
         }
 
         FieldContainer activeFieldContainerScript = this._activeGameField.GetComponent<FieldContainer>();
-        this._activeGameMusicBox = activeFieldContainerScript.SetPartStaffData(this._activePartStaffsData);
+        this._fieldContainer = activeFieldContainerScript.SetPartStaffData(this._activePartStaffsData);
         activeFieldContainerScript.SetState(FieldContainer.CurrentState.Moving);
         this._isPaused = true;
         Time.timeScale = 0.0F;
@@ -166,6 +179,8 @@ public class GameController : MonoBehaviour
             Time.timeScale = 1.0F;
             this._audioSource.UnPause();
         }
+
+
 
         this._activePlayer.UpdateRoutine(Time.deltaTime);
         if (this._beatIsSet)
@@ -195,16 +210,18 @@ public class GameController : MonoBehaviour
             }
 
 
+
             this._activeGameField.SendMessage("SetStaffNotes", new FieldContainer.FieldMessageParams(tmpCoordinates, this._beatOffsetPlayed));
 
             this._beat32IsSet = false;
 
             FieldContainer activeFieldScript = this._activeGameField.GetComponent<FieldContainer>();
 
-            bool musicBoxIsPlaying = this._activeGameMusicBox.CheckIsPlaying();
+            bool musicBoxIsReadyToChange = activeFieldScript.CheckIsReadyToChange();
             bool partStaffAllNotePlayed = this._activePartStaffsData.CheckAllNotesPlayed();
-            bool fieldHasBeatPucks = activeFieldScript.CheckBeatsPucks();
-            bool readyToChange = !musicBoxIsPlaying && partStaffAllNotePlayed && !fieldHasBeatPucks;
+            bool readyToChange = musicBoxIsReadyToChange && partStaffAllNotePlayed;
+
+
 
 
             LevelGoal.LevelGoalState currentLevelGoalState = this._levelProgressController.GetLevelGoalState();
@@ -259,8 +276,8 @@ public class GameController : MonoBehaviour
         return this._isPaused;
     }
 
-    public void SetMusicBox(MusicBox inMusicBox) {
-        this._activeGameMusicBox = inMusicBox;
+    public Dictionary<string, WaveForm.WaveFormSettings> GetWaveFormSettings() { 
+        return this._waveFormSettings; 
     }
 
     public Vector2 GetWorldSize() {
@@ -362,12 +379,11 @@ public class GameController : MonoBehaviour
 
         this._activePartStaffsData = this._nextPartStaffsData;
         this._activeGameField = this._nextGameField;
-        this._activeGameMusicBox = this._nextGameMusicBox;
         this._activeGameFieldBeat32sCount = this._activePartStaffsData.GetBeat32sCount();
 
-        FieldContainer activeFieldContainerScript = this._activeGameField.GetComponent<FieldContainer>();
+        this._fieldContainer = this._activeGameField.GetComponent<FieldContainer>();
 
-        activeFieldContainerScript.SetState(FieldContainer.CurrentState.Moving);
+        this._fieldContainer.SetState(FieldContainer.CurrentState.Moving);
         this.SpawnNextGameField();
 
         dissmisGameFieldScript.SetState(FieldContainer.CurrentState.Dismiss);
@@ -381,15 +397,15 @@ public class GameController : MonoBehaviour
         this._nextPartStaffsData = this._activeLevel.LoadSynth(this._activeGameFieldBeat32sCount,this._levelProgressController.GetLevelGoalState());
         this._nextGameField = Instantiate(this.gameFieldPrefab, this.transform);
         FieldContainer nextFieldContainerScript = this._nextGameField.GetComponent<FieldContainer>();
-        this._nextGameMusicBox = nextFieldContainerScript.SetPartStaffData(this._nextPartStaffsData);
+        nextFieldContainerScript.SetPartStaffData(this._nextPartStaffsData);
         nextFieldContainerScript.SetState(FieldContainer.CurrentState.Orbiting);
         Debug.Log(this._levelProgressController.GetLevelGoalState());
 
     }
 
     public static string GetStreamedText(string inpath) {
-        var _path = $"{Application.streamingAssetsPath}{Path.DirectorySeparatorChar}{inpath}";
-        UnityEngine.Networking.UnityWebRequest www = UnityEngine.Networking.UnityWebRequest.Get(_path);
+        string path = $"{Application.streamingAssetsPath}{Path.DirectorySeparatorChar}{inpath}";
+        UnityEngine.Networking.UnityWebRequest www = UnityEngine.Networking.UnityWebRequest.Get(path);
         www.SendWebRequest();
         while (!www.downloadHandler.isDone)
         {
@@ -397,32 +413,37 @@ public class GameController : MonoBehaviour
         return www.downloadHandler.text;
     }
 
+    public static byte[] GetStreamedBytes(string inpath)
+    {
+        string path = $"{Application.streamingAssetsPath}{Path.DirectorySeparatorChar}{inpath}";
+        UnityEngine.Networking.UnityWebRequest www = UnityEngine.Networking.UnityWebRequest.Get(path);
+        www.SendWebRequest();
+        while (!www.downloadHandler.isDone)
+        {
+        }
+        return www.downloadHandler.data;
+    }
+
+
+
     void OnAudioFilterRead(float[] data, int channels)
     {
         for (int i = 0; i < data.Length; i += channels) {
             float metronomeGain = 0.1F;
             if (this._musicCoordinatesPlayed.GetSamples() == 0)
             {
-                MusicCoordinates tmpCoordinates = MusicCoordinates.GetCopy(this._musicCoordinatesPlayed);
+                MusicCoordinates tmpCoordinates = MusicCoordinates.GetCopy(this._musicCoordinatesPlayed); 
                 if (this._musicCoordinatesPlayed.GetBeat32s() == 0)
                 {
-                    this._activeGameMusicBox.beatStroke(tmpCoordinates);
-                    if (this._musicCoordinatesPlayed.GetBeats() == 0)
-                    {
-                        metronomeGain = 1.0F;
-                    }
-                    else if (this._musicCoordinatesPlayed.GetBeats() % this._measure == 0)
-                    {
-                        metronomeGain = 0.5F;
-                    }
+                    
 
                     this._beatIsSet = true;
                     
                 }
-                this._activeGameMusicBox.NextNoteStroke(tmpCoordinates);
+                this._fieldContainer.NextNoteStroke(tmpCoordinates);
                 this._beat32IsSet = true;
             }
-            float note = this._activeGameMusicBox.playNotes(this._musicCoordinatesPlayed, this.GetBeat32LentgthSec(), metronomeGain, this._currentPitchCoef);
+            float note = this._fieldContainer.playNotes(this._musicCoordinatesPlayed, this.GetBeat32LentgthSec(), metronomeGain, this._currentPitchCoef);
             this._currentGain = note;
 
             for (int j = 0; j < channels; j++)

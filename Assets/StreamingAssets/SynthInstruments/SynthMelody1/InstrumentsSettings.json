@@ -1,0 +1,11 @@
+{
+	
+	"mWaveType":4,
+	"modulatingGaing":0,
+	"mFrequency":7,
+	"fadeLength":2,
+	"distortionFlg":false,
+	"distortionGain":0.3,
+	"canSustain":false,
+	"fadeWaveBase":0.2
+}

@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -7,6 +9,20 @@ using UnityEngine.UIElements;
 
 public class GameData
 {
+
+    public class InvalidScorePartTypeException : Exception
+    {
+        public InvalidScorePartTypeException() : base() { }
+        public InvalidScorePartTypeException(string message) : base(message) { }
+        public InvalidScorePartTypeException(string message, Exception inner) : base(message, inner) { }
+    }
+
+    public class NoPlayablePartException : Exception
+    {
+        public NoPlayablePartException() : base() { }
+        public NoPlayablePartException(string message) : base(message) { }
+        public NoPlayablePartException(string message, Exception inner) : base(message, inner) { }
+    }
 
     public string gameName;
     public string gameAuthor;
@@ -89,8 +105,8 @@ public class GameData
         public int GetMaxInstrumentsCount() { 
             int maxInstrumentsCount = 0;
             for (int i= 0; i<this.levelStructure.Count;i++) {
-                ScorePart tmpScorePart = this.GetScorePart(this.levelStructure[i]);
-                int tmpInstrumentCount = tmpScorePart.GetInstrumentsCount(ScorePart.StaffTypes.AllStaffs);
+                
+                int tmpInstrumentCount = this.GetScorePartMaxInstrumentsCount(this.levelStructure[i]);
                 if (tmpInstrumentCount> maxInstrumentsCount) {
                     maxInstrumentsCount = tmpInstrumentCount;
                 }
@@ -103,7 +119,7 @@ public class GameData
             for (int i = 0; i < this.levelStructure.Count; i++)
             {
                 ScorePart tmpScorePart = this.GetScorePart(this.levelStructure[i]);
-                float tmpInstrumentGain = tmpScorePart.GetTotalInstrumentsGain(ScorePart.StaffTypes.AllStaffs);
+                float tmpInstrumentGain = this.GetScorePartMaxInstrumentsGain(this.levelStructure[i]);
                 if (tmpInstrumentGain > maxInstrumentsGain)
                 {
                     maxInstrumentsGain = tmpInstrumentGain;
@@ -112,26 +128,98 @@ public class GameData
             return maxInstrumentsGain;
         }
 
+        private List<ScorePart> GetScorePartListByString(string inScorePartType) {
+            List<ScorePart> returnScorePartList = null;
+            switch (inScorePartType)
+            {
+                case "Couplet": returnScorePartList = this.couplets; break;
+                case "Chorus": returnScorePartList = this.choruses; break;
+                case "Solo": returnScorePartList = this.solos; break;
+                case "Intro": returnScorePartList = this.intros; break;
+                case "Outro": returnScorePartList = this.outros; break;
+                case "Bridge": returnScorePartList = this.bridges; break;
+            }
+
+            if (returnScorePartList == null) {
+                throw new InvalidScorePartTypeException($"Can't find type: {inScorePartType}");
+            }
+
+            return returnScorePartList;
+        }
+
+        private void GetScorePartUniqueInstruments(List<ScorePart> inScorePartList, StringCollection inCurrentInstruments) {
+            for (int i = 0; i < inScorePartList.Count; i++) {
+                StringCollection tmpStringCollection = inScorePartList[i].GetScorePartInstruments();
+                for (int y = 0; y < tmpStringCollection.Count; y++) {
+                    if (!inCurrentInstruments.Contains(tmpStringCollection[y])) {
+                        inCurrentInstruments.Add(tmpStringCollection[y]);
+                    }
+                }
+            }
+            
+        }
+
+        public StringCollection GetUniqueInstruments() {
+            StringCollection returnUniqueInstruments = new StringCollection();
+
+            GetScorePartUniqueInstruments(this.couplets, returnUniqueInstruments);
+            GetScorePartUniqueInstruments(this.choruses, returnUniqueInstruments);
+            GetScorePartUniqueInstruments(this.solos, returnUniqueInstruments);
+            GetScorePartUniqueInstruments(this.intros, returnUniqueInstruments);
+            GetScorePartUniqueInstruments(this.outros, returnUniqueInstruments);
+            GetScorePartUniqueInstruments(this.bridges, returnUniqueInstruments);
+
+            return returnUniqueInstruments;
+        }
+
+        public float GetScorePartMaxInstrumentsGain(string inScorePartType) {
+            float returnMaxGain = 0;
+            List<ScorePart> scorePartList = this.GetScorePartListByString(inScorePartType);
+            
+            for (int i = 0; i < scorePartList.Count; i++)
+            {
+                float tmpGain = scorePartList[i].GetTotalInstrumentsGain(ScorePart.StaffTypes.AllStaffs);
+                if (tmpGain> returnMaxGain) {
+                    returnMaxGain = tmpGain;
+                }
+            }
+
+            return returnMaxGain;
+        }
+
+        public int GetScorePartMaxInstrumentsCount(string inScorePartType)
+        {
+            int returnMaxCount = 0;
+            List<ScorePart> scorePartList = this.GetScorePartListByString(inScorePartType);
+
+            for (int i = 0; i < scorePartList.Count; i++)
+            {
+                int tmpCount = scorePartList[i].GetInstrumentsCount(ScorePart.StaffTypes.AllStaffs);
+                if (tmpCount > returnMaxCount)
+                {
+                    returnMaxCount = tmpCount;
+                }
+            }
+
+            return returnMaxCount;
+        }
+
+
         public ScorePart GetScorePart(string inScorePartType)
         {
             ScorePart returnScorePart = null;
-            List<ScorePart> ScorePartList = null;
-            switch (inScorePartType)
-            {
-                case "Couplet": ScorePartList = this.couplets; break;
-                case "Chorus": ScorePartList = this.choruses; break;
-                case "Solo": ScorePartList = this.solos; break;
-                case "Intro": ScorePartList = this.intros; break;
-                case "Outro": ScorePartList = this.outros; break;
-                case "Bridge": ScorePartList = this.bridges; break;
-            }
+            List<ScorePart> scorePartList = this.GetScorePartListByString(inScorePartType);
+            
 
             int returnIndex = 0;
-            if (ScorePartList.Count > 0)
+            if (scorePartList.Count > 0)
             {
-                returnIndex = this.rand.Next(ScorePartList.Count);
-                returnScorePart = ScorePartList[returnIndex];
+                returnIndex = this.rand.Next(scorePartList.Count);
+                returnScorePart = scorePartList[returnIndex];
                 returnScorePart.ResetScoreStaff();
+            }
+            else {
+                throw new NoPlayablePartException($"Score part[{inScorePartType}] has no data");
             }
 
             return returnScorePart;
@@ -255,7 +343,7 @@ public class GameData
             }
             else
             {
-                // ToDo: add exception 
+                throw new NoPlayablePartException("No playable part");
             }
 
             
@@ -474,6 +562,31 @@ public class GameData
             return this.brigeOffsetBeats;
         }
 
+        public StringCollection GetScorePartInstruments()
+        {
+            StringCollection returnInstruments = new StringCollection();
+
+            for (int i = 0; i < ScoreMelodyStaffs.Count; i++)
+            {
+                string tmpInstrument = this.ScoreMelodyStaffs[i].GetInstrument();
+                if (!returnInstruments.Contains(tmpInstrument))
+                {
+                    returnInstruments.Add(tmpInstrument);
+                }
+            }
+
+            for (int i = 0; i < ScoreBeatStaffs.Count; i++)
+            {
+                string tmpInstrument = this.ScoreBeatStaffs[i].GetInstrument();
+                if (!returnInstruments.Contains(tmpInstrument))
+                {
+                    returnInstruments.Add(tmpInstrument);
+                }
+            }
+
+            return returnInstruments;
+        }
+
         public void ResetScoreStaff()
         {
             for (int i = 0; i < this.ScoreMelodyStaffs.Count; i++)
@@ -549,6 +662,8 @@ public class GameData
         public string GetNameCheck() {
             return this._nameCheck;
         }
+
+        
 
         public void SetUnPlayableStaff(ScoreStaff inMelodyStaffs) {
             this._unPlayableStaffs.Add(inMelodyStaffs);

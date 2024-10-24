@@ -16,6 +16,7 @@ public enum Wave
 
 public class SynthInstrument
 {
+    
     //Tweaks for inhereited instruments
     protected Wave waveType = Wave.Saw; //wave type for current instrument
 
@@ -54,8 +55,10 @@ public class SynthInstrument
     protected float _mPhase = 0; //phase for modulating sound
 
     protected bool _isPlayingFlg = false; //flag that note is playing
+    protected bool _readyToChange = false;
 
     protected bool _isBass = false;
+    protected float _frequencyModifier=0.0F;
 
     public SynthInstrument(float inSampleRate, float ininstrumentGainCoef){
         this._sampleRate = inSampleRate;
@@ -95,9 +98,11 @@ public class SynthInstrument
                 currentPlayPhase = currentLength / wholeNoteLength;
                 amplitude *= this.SustainGain(currentPlayPhase);
             }
-            else if (currentLength <= wholeNoteLength + fadeLength)
+            else if (currentLength < (this.canSustain? wholeNoteLength:0.0F) + fadeLength)
             {
-
+                if (!this._readyToChange) { 
+                    this._readyToChange = true;
+                }
                 currentPlayPhase = (currentLength - (this.canSustain ? wholeNoteLength : 0.0)) / fadeLength;
                 amplitude *= this.FaidGain(currentPlayPhase);
             }
@@ -121,6 +126,7 @@ public class SynthInstrument
 
         this._samplesPlayed = 0;
         this._isPlayingFlg = false;
+        this._readyToChange = false;
         this._noteToPlay = null;
         this._nextNoteToPlay = null;
         this._beats = 0;
@@ -214,7 +220,9 @@ public class SynthInstrument
     {
         //double phaseTime = inCurrentLength - Math.Truncate(inCurrentLength);
 
-        float frequencyCalc = this._noteToPlay.GetFrequency(_trueNote) * (this._isBass ? 1.0F : inPitchCoef);
+        float frequencyCalc = this._noteToPlay.GetFrequency(_trueNote);
+        frequencyCalc += frequencyCalc * this._frequencyModifier;
+        frequencyCalc *= (this._isBass ? 1.0F : inPitchCoef);
         float mFrequencyCalc = this.mFrequency;
 
         this._phase += (float)(frequencyCalc/ this._sampleRate);
@@ -287,6 +295,10 @@ public class SynthInstrument
 
     public bool CheckIsPlaying() {
         return this._isPlayingFlg;
+    }
+
+    public bool CheckIsReadyToChange() {
+        return this._readyToChange;
     }
 
     public static float GetAmplitudeByWave(float inPhase, Wave inWaveType){

@@ -68,6 +68,7 @@
     <Compile Include="Assets\Scripts\GameControl\LevelGoal\PlayThroughLevelGoal.cs" />
     <Compile Include="Assets\Scripts\AudioGenerator\SynthInstrument\Sin.cs" />
     <Compile Include="Assets\Scripts\GameControl\StaffController.cs" />
+    <Compile Include="Assets\Scripts\AudioGenerator\SynthInstrument\WaveForm.cs" />
     <Compile Include="Assets\Scripts\GameControl\PlayerSkills.cs" />
     <Compile Include="Assets\Scripts\GameControl\Player.cs" />
     <Compile Include="Assets\Scripts\AudioGenerator\SynthInstrument\Saw.cs" />
