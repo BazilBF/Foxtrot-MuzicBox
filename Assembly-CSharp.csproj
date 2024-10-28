@@ -80,6 +80,7 @@
     <Compile Include="Assets\Scripts\AutoStuff\BeatPuck.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\AudioGenerator\NewBehaviourScript.cs" />
+    <Compile Include="Assets\Scripts\GameControl\BeatButtonScript.cs" />
     <Compile Include="Assets\Scripts\AudioGenerator\MusicCoordinates.cs" />
     <Compile Include="Assets\Scripts\GameControl\Skills\NightCore.cs" />
     <Compile Include="Assets\Scripts\MainMenuUIScript.cs" />

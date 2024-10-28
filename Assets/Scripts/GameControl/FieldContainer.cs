@@ -453,7 +453,7 @@ public class FieldContainer : MonoBehaviour
             }
 
 
-            script.SetStaff(this._staffWidth, this._staffHeight, maxBeatButtonWidth, globalSpawnPoint, allSynthIntstruments[i], i);
+            script.SetStaff(this._staffWidth, this._staffHeight, maxBeatButtonWidth, globalSpawnPoint, allSynthIntstruments[i], i, this._controller);
             this._playableStaffs[i] = newStaff;
         }
         for (int i = 0; i < unPlayableIntsrumentsCount; i++)

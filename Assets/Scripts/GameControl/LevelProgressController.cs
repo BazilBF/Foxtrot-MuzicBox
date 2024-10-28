@@ -101,23 +101,24 @@ public class LevelProgressController
     }
 
     private int CalculateMark(float inWinDeltaDistance) {
+        Debug.Log(inWinDeltaDistance);
         int returnMark = 5;
-        if (inWinDeltaDistance > 0.95F)
+        if (inWinDeltaDistance > 0.8F)
         {
             returnMark = 0;
         }
-        else if (inWinDeltaDistance >= 0.9F) {
+        else if (inWinDeltaDistance >= 0.7F) {
             returnMark = 1;
         }
-        else if (inWinDeltaDistance >= 0.8F)
+        else if (inWinDeltaDistance >= 0.5F)
         {
             returnMark = 2;
         }
-        else if (inWinDeltaDistance >= 0.65F)
+        else if (inWinDeltaDistance >= 0.3F)
         {
             returnMark = 3;
         }
-        else if (inWinDeltaDistance >= 0.4F)
+        else if (inWinDeltaDistance >= 0.1F)
         {
             returnMark = 4;
         }

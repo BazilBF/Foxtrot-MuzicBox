@@ -24,6 +24,7 @@ public class BeatPuck : MonoBehaviour
     private float _deltaWinDistance;
     private float _beatMarkerScale;
     private bool _readyToSet = false;
+    public GameObject particleSystem = null;
 
     private SpriteRenderer _beatMarkSpriteRenderer;
 
@@ -79,7 +80,7 @@ public class BeatPuck : MonoBehaviour
     }
 
     public void SetBeatMarkerScale(float inScale) {
-        if (this._puckType == PuckType.Note || this._puckType == PuckType.Bonus)
+        if ((this._puckType == PuckType.Note || this._puckType == PuckType.Bonus)&&(!this._playerTapped))
         {
             this._beatMarkerScale = this._puckSpriteRenderer.sprite.bounds.size.x * (this._puckSpriteRenderer.sprite.bounds.size.x / _beatMarkSpriteRenderer.sprite.bounds.size.x) * inScale;
             this.beatMarker.transform.localScale = new Vector3(this._beatMarkerScale, this._beatMarkerScale, 0.0F);
@@ -121,12 +122,18 @@ public class BeatPuck : MonoBehaviour
         }
     }
 
-    public void SetTrueNote(float inDeltaWinDistance) {
+    public void SetTrueNote(float inDeltaWinDistance, UnityEngine.Color inColor) {
         if (!this._playerTapped) {
             this._trueNote = true;
             this._deltaWinDistance = inDeltaWinDistance;
             this.SetPuckColor(new UnityEngine.Color(0.0f, 0.8f, 0.0f, 1.0f));
-            this.SetBeatMarkerColor(new UnityEngine.Color(0.0f, 1f, 0.0f, 1.0f));
+            this.SetBeatMarkerColor(inColor);
+
+            ParticleSystem tmpParticleSystem = this.particleSystem.GetComponent<ParticleSystem>();
+            var emitParams = new ParticleSystem.EmitParams();
+            emitParams.startColor = inColor;
+            emitParams.startSize = 0.2f;
+            tmpParticleSystem.Emit(emitParams,10);
         }
     }
 
@@ -137,6 +144,10 @@ public class BeatPuck : MonoBehaviour
             this.SetPuckColor (new UnityEngine.Color(0.8f, 0.0f, 0.0f, 1.0f));
             this.SetBeatMarkerColor(new UnityEngine.Color(1.0f, 0.0f, 0.0f, 1.0f));
         }
+    }
+
+    public UnityEngine.Color GetPuckColor() { 
+        return this._beatMarkSpriteRenderer.color;
     }
 
     public bool GetPlayerTapped() {

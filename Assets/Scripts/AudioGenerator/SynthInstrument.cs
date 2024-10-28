@@ -97,6 +97,7 @@ public class SynthInstrument
             {
                 currentPlayPhase = currentLength / wholeNoteLength;
                 amplitude *= this.SustainGain(currentPlayPhase);
+                this._currentAmplitude = amplitude;
             }
             else if (currentLength < (this.canSustain? wholeNoteLength:0.0F) + fadeLength)
             {
@@ -105,12 +106,13 @@ public class SynthInstrument
                 }
                 currentPlayPhase = (currentLength - (this.canSustain ? wholeNoteLength : 0.0)) / fadeLength;
                 amplitude *= this.FaidGain(currentPlayPhase);
+                this._currentAmplitude = amplitude;
             }
             else {
                 this._isPlayingFlg = false;
                 this._currentAmplitude = 0.0F;
             }
-            this._currentAmplitude = amplitude;
+            
 
 
         }
