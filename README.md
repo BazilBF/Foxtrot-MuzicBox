@@ -23,6 +23,7 @@ Video explanation:
   - sin,
   - square,
   - pulse
+- custom synth instruments which are set by three png images and one jscon setting file 
 - loading music from text file, text file notation is close to classic music sheet's notation but in JSON (see /Foxtrot-MuzicBox/Assets/StreamingAssets/SynthMusic/TestMusicLvL.json for example). 
   - each music composotion supports different parts (intro, Couplet, Chorus, Solo, Bridge, Outro).
   - each part in one composition could have several variant's
@@ -32,7 +33,9 @@ Video explanation:
 - 2 player skills
   - NightCore - increasing speed and pitch
   - Lullaby - decreasing speed
-- 1 game mode: duel
+- 2 game modes
+  - duel
+  - classic playthrough 
 - various beat pucks (notes):
   - regular
   - mine
@@ -43,6 +46,7 @@ Video explanation:
 - more instruments
 - more game modes
 - story mode
+- created by players instruments and levels
 
 
 [Archived videos]
