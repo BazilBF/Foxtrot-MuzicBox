@@ -52,7 +52,7 @@ public class GameController : MonoBehaviour
 
 
     private GameObject _activeGameField = null;
-    private int _activeGameFieldBeat32sCount = 0;
+    //private int _activeGameFieldBeat32sCount = 0;
 
     private GameObject _nextGameField = null;
     public GameObject _Grid = null;
@@ -140,10 +140,7 @@ public class GameController : MonoBehaviour
 
         this._levelProgressController = new LevelProgressController(this._activePlayer, this._activeLevel);
 
-        this._activePartStaffsData = this._activeLevel.LoadSynth(0, LevelGoal.LevelGoalState.Starting);
-        this._activeGameFieldBeat32sCount = this._activePartStaffsData.GetPartBeat32sCount(this._measure, this._length);
-
-
+        this._activePartStaffsData = this._activeLevel.LoadSynth(LevelGoal.LevelGoalState.Starting, this._activePlayer.GetDifficulty());
 
         this._measure = this._activeLevel.GetMeasure();
         this._length = this._activeLevel.GetLength();
@@ -370,7 +367,9 @@ public class GameController : MonoBehaviour
         this._activePlayer.LoadScene(GameController._mainMenuSceneId);
     }
 
-    
+    public float GetPlayedPhase() {
+        return (float)this._musicCoordinatesPlayed.GetTotalBeat32s() / (float)this._activePartStaffsData.GetBeat32sCount();
+    }
 
     private void ChangeActiveGameField (){
 
@@ -379,7 +378,7 @@ public class GameController : MonoBehaviour
 
         this._activePartStaffsData = this._nextPartStaffsData;
         this._activeGameField = this._nextGameField;
-        this._activeGameFieldBeat32sCount = this._activePartStaffsData.GetBeat32sCount();
+
 
         this._fieldContainer = this._activeGameField.GetComponent<FieldContainer>();
 
@@ -394,7 +393,7 @@ public class GameController : MonoBehaviour
 
     private void SpawnNextGameField() {
 
-        this._nextPartStaffsData = this._activeLevel.LoadSynth(this._activeGameFieldBeat32sCount,this._levelProgressController.GetLevelGoalState());
+        this._nextPartStaffsData = this._activeLevel.LoadSynth(this._levelProgressController.GetLevelGoalState(),this._activePlayer.GetDifficulty());
         this._nextGameField = Instantiate(this.gameFieldPrefab, this.transform);
         FieldContainer nextFieldContainerScript = this._nextGameField.GetComponent<FieldContainer>();
         nextFieldContainerScript.SetPartStaffData(this._nextPartStaffsData);

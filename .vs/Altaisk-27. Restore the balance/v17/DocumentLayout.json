@@ -3,6 +3,18 @@
   "WorkspaceRootPath": "C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\assets\\scripts\\gamecontrol\\fieldcontainer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gamecontrol\\fieldcontainer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\assets\\scripts\\gamecontrol\\gamedata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gamecontrol\\gamedata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\assets\\scripts\\autostuff\\beatpuck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\autostuff\\beatpuck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|c:\\users\\zizil\\unity\\altaisk-27. restore the balance\\assets\\scripts\\gamecontrol\\beatbuttonscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gamecontrol\\beatbuttonscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -15,16 +27,8 @@
       "RelativeMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gamecontrol\\staffcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\assets\\scripts\\gamecontrol\\fieldcontainer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gamecontrol\\fieldcontainer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\assets\\scripts\\audiocheck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\audiocheck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\assets\\scripts\\autostuff\\beatpuck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\autostuff\\beatpuck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\assets\\scripts\\audiogenerator\\synthnote.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -33,10 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\assets\\scripts\\audiogenerator\\musiccoordinates.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\audiogenerator\\musiccoordinates.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\assets\\scripts\\gamecontrol\\gamedata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gamecontrol\\gamedata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E47725C9-E2B8-91F5-4FA7-7F9DA4B69094}|Assembly-CSharp.csproj|C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\assets\\scripts\\audiogenerator\\synthinstrument.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -146,11 +146,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 305,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 9,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "audiocheck.cs",
               "DocumentMoniker": "C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\Assets\\Scripts\\audiocheck.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\audiocheck.cs",
@@ -159,44 +159,44 @@
               "ViewState": "AQIAADoBAAAAAAAAAAAwwJ8BAAAZAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2023-08-15T14:05:41.488Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 1,
               "Title": "GameData.cs",
               "DocumentMoniker": "C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\Assets\\Scripts\\GameControl\\GameData.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\GameControl\\GameData.cs",
               "ToolTip": "C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\Assets\\Scripts\\GameControl\\GameData.cs",
               "RelativeToolTip": "Assets\\Scripts\\GameControl\\GameData.cs",
-              "ViewState": "AQIAABoAAAAAAAAAAAAAwI0AAAAAAAAA",
+              "ViewState": "AQIAAAYBAAAAAAAAAAAqwI0AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2023-08-26T15:01:13.336Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "BeatButtonScript.cs",
               "DocumentMoniker": "C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\Assets\\Scripts\\GameControl\\BeatButtonScript.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\GameControl\\BeatButtonScript.cs",
               "ToolTip": "C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\Assets\\Scripts\\GameControl\\BeatButtonScript.cs",
               "RelativeToolTip": "Assets\\Scripts\\GameControl\\BeatButtonScript.cs",
-              "ViewState": "AQIAABcAAAAAAAAAAAAWwG4AAAAcAAAA",
+              "ViewState": "AQIAADMAAAAAAAAAAADgv24AAAAbAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-26T16:45:00.145Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 2,
               "Title": "BeatPuck.cs",
               "DocumentMoniker": "C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\Assets\\Scripts\\AutoStuff\\BeatPuck.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AutoStuff\\BeatPuck.cs",
               "ToolTip": "C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\Assets\\Scripts\\AutoStuff\\BeatPuck.cs",
               "RelativeToolTip": "Assets\\Scripts\\AutoStuff\\BeatPuck.cs",
-              "ViewState": "AQIAADgAAAAAAAAAAAAwwCUAAAA6AAAA",
+              "ViewState": "AQIAAGQAAAAAAAAAAAAYwIUAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2023-09-03T15:00:38.163Z",
               "EditorCaption": ""
@@ -251,7 +251,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "StaffController.cs",
               "DocumentMoniker": "C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\Assets\\Scripts\\GameControl\\StaffController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\GameControl\\StaffController.cs",
@@ -259,18 +259,17 @@
               "RelativeToolTip": "Assets\\Scripts\\GameControl\\StaffController.cs",
               "ViewState": "AQIAAK4BAAAAAAAAAAAiwKABAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2023-08-18T02:29:43.933Z",
-              "EditorCaption": ""
+              "WhenOpened": "2023-08-18T02:29:43.933Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "FieldContainer.cs",
               "DocumentMoniker": "C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\Assets\\Scripts\\GameControl\\FieldContainer.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\GameControl\\FieldContainer.cs",
               "ToolTip": "C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\Assets\\Scripts\\GameControl\\FieldContainer.cs",
               "RelativeToolTip": "Assets\\Scripts\\GameControl\\FieldContainer.cs",
-              "ViewState": "AQIAAKcBAAAAAAAAAAAqwMcBAACTAAAA",
+              "ViewState": "AQIAAIYAAAAAAAAAAAAqwK4AAAAQAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2023-09-04T14:24:02.834Z",
               "EditorCaption": ""
@@ -289,7 +288,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "WaveForm.cs",
               "DocumentMoniker": "C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\Assets\\Scripts\\AudioGenerator\\SynthInstrument\\WaveForm.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AudioGenerator\\SynthInstrument\\WaveForm.cs",
@@ -297,8 +296,7 @@
               "RelativeToolTip": "Assets\\Scripts\\AudioGenerator\\SynthInstrument\\WaveForm.cs",
               "ViewState": "AQIAAHUAAAAAAAAAAIA2wIcAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-11T19:04:08.423Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-11T19:04:08.423Z"
             },
             {
               "$type": "Document",
@@ -410,7 +408,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "MusicCoordinates.cs",
               "DocumentMoniker": "C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\Assets\\Scripts\\AudioGenerator\\MusicCoordinates.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AudioGenerator\\MusicCoordinates.cs",
@@ -418,8 +416,7 @@
               "RelativeToolTip": "Assets\\Scripts\\AudioGenerator\\MusicCoordinates.cs",
               "ViewState": "AQIAACIAAAAAAAAAAAArwEMAAAA5AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2023-08-13T06:13:39.393Z",
-              "EditorCaption": ""
+              "WhenOpened": "2023-08-13T06:13:39.393Z"
             },
             {
               "$type": "Document",
@@ -447,7 +444,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "SynthNote.cs",
               "DocumentMoniker": "C:\\Users\\zizil\\Unity\\Altaisk-27. Restore the balance\\Assets\\Scripts\\AudioGenerator\\SynthNote.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AudioGenerator\\SynthNote.cs",
@@ -455,8 +452,7 @@
               "RelativeToolTip": "Assets\\Scripts\\AudioGenerator\\SynthNote.cs",
               "ViewState": "AQIAADUAAAAAAAAAAAAIwEMAAAAUAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2023-08-11T07:21:42.243Z",
-              "EditorCaption": ""
+              "WhenOpened": "2023-08-11T07:21:42.243Z"
             },
             {
               "$type": "Document",

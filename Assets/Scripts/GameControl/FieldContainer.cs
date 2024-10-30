@@ -126,10 +126,14 @@ public class FieldContainer : MonoBehaviour
     {
 
         this._phase = 1.0F;
+        float horizonLevel = this._controller.GetHorizonLevel();
 
         if (this._currentState == CurrentState.Orbiting) {
 
             this._currentTime += Time.deltaTime;
+            
+            float playPhase = this._controller.GetPlayedPhase();
+
             float orbitingPhase = Mathf.Lerp((float)(-Math.PI), (float)(Math.PI), (float)(this._currentTime / (this._controller.GetBeatLentgthSec() * this._beatsPerBarr)));
             if (Math.Round(orbitingPhase, 4) == Math.Round(Math.PI, 4)) {
                 this._currentTime = 0.0f;
@@ -137,11 +141,14 @@ public class FieldContainer : MonoBehaviour
 
             for (int i = 0; i < this._playableStaffs.Length; i++) {
 
-                float newX = (float)Math.Sin(this._startAngle[i] + orbitingPhase);
-                float newY = (float)Math.Cos(this._startAngle[i] + orbitingPhase);
+                float newX = (float)Math.Sin(this._startAngle[i] + orbitingPhase) * playPhase;
+                float newY = (float)Math.Cos(this._startAngle[i] + orbitingPhase) * playPhase;
 
-                this._playableStaffs[i].transform.position = new Vector3(newX, newY, 0.0F);
+                this._playableStaffs[i].transform.position = new Vector3(newX, newY + horizonLevel, 0.0F);
             }
+
+            this.transform.localScale = new Vector3(0.5F*playPhase,0.5F*playPhase,0.0F);
+            
         }
 
         if (this._currentState == CurrentState.Moving || this._currentState == CurrentState.Dismiss) {
@@ -156,19 +163,23 @@ public class FieldContainer : MonoBehaviour
                 float newX = this._startPosition[i].x + this._phase * this._movingDistance[i].x;
                 float newY = this._startPosition[i].y + this._phase * this._movingDistance[i].y;
 
-                this._playableStaffs[i].transform.localPosition = new Vector3(newX, newY, 0.0F);
+                this._playableStaffs[i].transform.position = new Vector3(newX, newY, 0.0F);
 
             }
 
-            if (this._currentState == CurrentState.Dismiss && this._phase == 1.0F)
+            if (this._currentState == CurrentState.Moving && this._phase < 1.0F) {
+                this.transform.localScale = new Vector3(0.5F + 0.5F * this._phase, 0.5F + 0.5F * this._phase, 0.0F);
+                
+                horizonLevel -= horizonLevel * this._phase;
+                this.transform.localPosition = new Vector3(0.0F, horizonLevel, 0.0F);
+                
+            }
+            else if (this._currentState == CurrentState.Moving && this._phase == 1.0F) {
+                this.SetState(CurrentState.Playing);
+            }
+            else if (this._currentState == CurrentState.Dismiss && this._phase == 1.0F)
             {
                 Destroy(this.gameObject);
-            }
-
-
-            if (this._phase == 1.0F)
-            {
-                this.SetState(CurrentState.Playing);
             }
 
 
@@ -308,7 +319,7 @@ public class FieldContainer : MonoBehaviour
                 currentStaffController.SetState(StaffController.CurrentState.Orbiting);
             }
 
-            this.transform.localPosition = new Vector3(0.0F, 1.0F, 0.0F);
+            this.transform.localPosition = new Vector3(0.0F, this._controller.GetHorizonLevel(), 0.0F);
 
 
         }
@@ -329,7 +340,7 @@ public class FieldContainer : MonoBehaviour
         if (this._currentState == CurrentState.Moving) {
 
 
-            this.transform.localScale = new Vector3(1.0F, 1.0F, 0.0F);
+            //this.transform.localScale = new Vector3(1.0F, 1.0F, 0.0F);
 
             for (int i = 0; i < this._playableStaffs.Length; i++)
             {

@@ -242,7 +242,7 @@ public class GameData
             return this._partsCount;
         }
 
-        public PartStaffsData LoadSynth(int inMovingBeat32sCount, LevelGoal.LevelGoalState inLevelGoalState) {
+        public PartStaffsData LoadSynth(LevelGoal.LevelGoalState inLevelGoalState, Player.Difficulty inDifficulty) {
 
             PartStaffsData newPartStaffData = null;
 
@@ -301,45 +301,12 @@ public class GameData
                 this._partsCount++;
                 newPartStaffData = new PartStaffsData(currentPartStr,this, currentScorePartObj.GetBrigeOffsetBeats());
                 List<ScoreStaff> melodyStaffs = currentScorePartObj.GetScoreStaffList("Melody");
-
-                melodyStaffs = this.ShuffleStaffs(melodyStaffs);
-
-                int playbleMelodyStaffCount = 0;
-
-                for (int i = 0; i < melodyStaffs.Count; i++)
-                {
-
-                   
-                    if (playbleMelodyStaffCount < this.maxPlaybleMelody && melodyStaffs[i].GetPlayable())
-                    {
-                        newPartStaffData.SetPlayableStaff(melodyStaffs[i]);
-                        playbleMelodyStaffCount++;
-                    }
-                    else
-                    {
-                        newPartStaffData.SetUnPlayableStaff(melodyStaffs[i]);
-                    }
-                }
-
-                int playbleBeatStaffCount = 0;
+                
+                this.SetPartStaffData(newPartStaffData, melodyStaffs, this.maxPlaybleMelody,inDifficulty);
 
                 List<ScoreStaff> beatStaffs = currentScorePartObj.GetScoreStaffList("Beat");
-                beatStaffs = this.ShuffleStaffs(beatStaffs);
+                this.SetPartStaffData(newPartStaffData, beatStaffs, this.maxPlaybleBeat, inDifficulty);
 
-                for (int i = 0; i < beatStaffs.Count; i++)
-                {
-                    if (playbleBeatStaffCount < this.maxPlaybleBeat && beatStaffs[i].GetPlayable())
-                    {
-                        newPartStaffData.SetPlayableStaff(beatStaffs[i]);
-                        playbleBeatStaffCount++;
-                    }
-                    else
-                    {
-                        newPartStaffData.SetUnPlayableStaff(beatStaffs[i]);
-                    }
-                }
-
-                newPartStaffData.SetTotalBeat32sCount(inMovingBeat32sCount);
             }
             else
             {
@@ -351,6 +318,27 @@ public class GameData
             return newPartStaffData;
         }
 
+        private void SetPartStaffData(PartStaffsData inPartStaffsData, List<ScoreStaff> inScoreStaffList, int inMaxStaffMelodyCnt, Player.Difficulty inDifficulty) {
+            int playbleStaffCount = 0;
+            if (inDifficulty == Player.Difficulty.Hard)
+            {
+                inScoreStaffList = this.ShuffleStaffs(inScoreStaffList);
+            }
+            for (int i = 0; i < inScoreStaffList.Count; i++)
+            {
+
+
+                if (playbleStaffCount < inMaxStaffMelodyCnt && inScoreStaffList[i].GetPlayable())
+                {
+                    inPartStaffsData.SetPartStaff(inScoreStaffList[i], true);
+                    playbleStaffCount++;
+                }
+                else
+                {
+                    inPartStaffsData.SetPartStaff(inScoreStaffList[i], false);
+                }
+            }
+        }
         
 
         public float GetMineSpawnChance() {
@@ -648,8 +636,6 @@ public class GameData
 
         private int _totalBeat32sCount = 0;
 
-        private int _currentBeats32sCount = 0;
-
         private int _notesPlayed;
         private string _nameCheck;
 
@@ -665,16 +651,21 @@ public class GameData
 
         
 
-        public void SetUnPlayableStaff(ScoreStaff inMelodyStaffs) {
-            this._unPlayableStaffs.Add(inMelodyStaffs);
-            this._unPlaybleNoteCount.Add(0);
+        public void SetPartStaff(ScoreStaff inStaff, bool inIsPlayable) {
+            List<ScoreStaff> tmpScoreStaff = this._unPlayableStaffs;
+            List<int> tmpNoteCount = this._unPlaybleNoteCount;
+            if (inIsPlayable)
+            {
+                tmpScoreStaff = this._playableStaffs;
+                tmpNoteCount = this._playbleNoteCount;
+            }
+
+            tmpScoreStaff.Add(inStaff);
+            tmpNoteCount.Add(0);
+
+            this.SetTotalBeat32sCount(inStaff);
         }
 
-        public void SetPlayableStaff(ScoreStaff inMelodyStaffs)
-        {
-            this._playableStaffs.Add(inMelodyStaffs);
-            this._playbleNoteCount.Add(0);
-        }
 
         public int GetBridgeOffsetBeats() {
             return this._bridgeOffsetBeats;
@@ -701,63 +692,22 @@ public class GameData
             return this._totalBeat32sCount;
         }
 
-        public int GetCurrentBeats32sCount() {
-            return this._currentBeats32sCount;
-        }
-
-        public void SetTotalBeat32sCount(int inTotalBeat32sCount) {
-            this._totalBeat32sCount = inTotalBeat32sCount;
-        }
-
-        public int GetPartBeat32sCount(int inMeasure, int inLength) {
-
-            int lastBeat32sCount = 0;
-
-            int scoreLength = inLength;
-            int scoreMeasure = inMeasure;
-
-            for (int i = 0; i < this._playableStaffs.Count; i++)
+        public void SetTotalBeat32sCount(ScoreStaff inScoreStaff) {
+            if (inScoreStaff.GetNotesCount() > 0)
             {
+                int[] tmpNotesCoordinates = inScoreStaff.GetLastNoteCoordinates();
+                ScoreNote tmpNote = inScoreStaff.GetNote(tmpNotesCoordinates, true);
 
-                if (this._playableStaffs[i].GetNotesCount() > 0)
+                int noteLength = tmpNote.GetLength();
+                float noteMeasure = tmpNote.GetMeasure();
+
+                int totalBeats32s = (tmpNotesCoordinates[0] * this._parentRythmLevel.GetMeasure() + tmpNotesCoordinates[1]) * (32 / this._parentRythmLevel.GetLength()) + (int)(noteMeasure * (32.0F / (float)noteLength));
+
+                if (this._totalBeat32sCount == 0 || totalBeats32s > this._totalBeat32sCount)
                 {
-                    int[] tmpNotesCoordinates = this._playableStaffs[i].GetLastNoteCoordinates();
-                    ScoreNote tmpNote = this._playableStaffs[i].GetNote(tmpNotesCoordinates, true);
-
-                    int noteLength = tmpNote.GetLength();
-                    float noteMeasure = tmpNote.GetMeasure();
-
-                    int totalBeats32s = (tmpNotesCoordinates[0] * scoreMeasure + tmpNotesCoordinates[1]) * (32 / scoreLength) + (int)(noteMeasure * (32.0F / (float)noteLength));
-
-                    if (lastBeat32sCount == 0 || totalBeats32s > lastBeat32sCount)
-                    {
-                        lastBeat32sCount = totalBeats32s;
-                    }
+                    this._totalBeat32sCount = totalBeats32s;
                 }
             }
-
-            for (int i = 0; i < this._unPlayableStaffs.Count; i++)
-            {
-                if (this._unPlayableStaffs[i].GetNotesCount() > 0)
-                {
-                    int[] tmpNotesCoordinates = this._unPlayableStaffs[i].GetLastNoteCoordinates();
-                    ScoreNote tmpNote = this._unPlayableStaffs[i].GetNote(tmpNotesCoordinates, true);
-
-                    int noteLength = tmpNote.GetLength();
-                    float noteMeasure = tmpNote.GetMeasure();
-
-                    int totalBeats32s = (tmpNotesCoordinates[0] * scoreMeasure + tmpNotesCoordinates[1]) * (32 / scoreLength) + +(int)(noteMeasure * (32.0F / (float)noteLength));
-
-                    if (lastBeat32sCount == 0 || totalBeats32s > lastBeat32sCount)
-                    {
-                        lastBeat32sCount = totalBeats32s;
-                    }
-                }
-            }
-
-            this.SetTotalBeat32sCount(lastBeat32sCount);
-
-            return lastBeat32sCount;
         }
 
         public int[] GetNextNoteCoordinates(int inStaffIndex, bool inIsPlayable, int inNoteIndex) {
@@ -775,7 +725,7 @@ public class GameData
         {
             SynthNote returnNote = null;
 
-            this._currentBeats32sCount = inMusicCoordinates.GetTotalBeat32s();
+            
 
             
 

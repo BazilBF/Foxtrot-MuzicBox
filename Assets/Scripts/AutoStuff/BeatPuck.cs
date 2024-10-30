@@ -131,7 +131,7 @@ public class BeatPuck : MonoBehaviour
 
             ParticleSystem tmpParticleSystem = this.particleSystem.GetComponent<ParticleSystem>();
             var emitParams = new ParticleSystem.EmitParams();
-            emitParams.startColor = inColor;
+            
             emitParams.startSize = 0.2f;
             tmpParticleSystem.Emit(emitParams,10);
         }
