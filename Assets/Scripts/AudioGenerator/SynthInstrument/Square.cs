@@ -10,7 +10,7 @@ public class Square : SynthInstrument
     {
         this.waveType = Wave.Square;
         this.modulatingGaing = 0.0F;
-        this.distortionFlg = false;
+        
 
     }
 }

@@ -98,7 +98,7 @@ public class WaveForm : SynthInstrument
         this.modulatingGaing = inWaveFormSettings.modulatingGaing;
         this.mFrequency = inWaveFormSettings.mFrequency;
         this.fadeLength = inWaveFormSettings.fadeLength;
-        this.distortionFlg = inWaveFormSettings.distortionFlg;
+        
         this.canSustain = inWaveFormSettings.canSustain;
         this._fadeGain = inWaveFormSettings.fadeGain;
         this._fadeWave = inWaveFormSettings.fadeWave;

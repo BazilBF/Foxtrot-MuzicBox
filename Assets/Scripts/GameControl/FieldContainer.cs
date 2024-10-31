@@ -195,7 +195,11 @@ public class FieldContainer : MonoBehaviour
         string[] staffsKeys = this._activePlayer.GetStaffsKeys();
         for (int i = 0; i < this._playableStaffs.Length; i++) {
             if (Input.GetKeyDown(staffsKeys[i])) {
-                this._playableStaffs[i].GetComponent<StaffController>().PlayerTaped();
+                BeatPuck tmpBeatPuck = this._playableStaffs[i].GetComponent<StaffController>().PlayerTaped();
+                if (tmpBeatPuck != null) {
+                    
+                    this._musicBox.beatStroke(this._controller.GetMusicCoordinates(), tmpBeatPuck.GetSynthNote(), tmpBeatPuck.GetTrueTone());
+                }
             }
         }
 
@@ -236,7 +240,11 @@ public class FieldContainer : MonoBehaviour
                     if (touchedStaff != null)
                     {
                         Debug.Log($"[Touch Staff][This is staff]");
-                        touchedStaff.PlayerTaped();
+                        BeatPuck tmpBeatPuck = touchedStaff.PlayerTaped();
+                        if (tmpBeatPuck != null)
+                        {
+                            this._musicBox.beatStroke(this._controller.GetMusicCoordinates(), tmpBeatPuck.GetSynthNote(), tmpBeatPuck.GetTrueTone());
+                        }
                     }
                 }
             }

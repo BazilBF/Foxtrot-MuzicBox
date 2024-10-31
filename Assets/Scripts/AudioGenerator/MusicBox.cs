@@ -7,14 +7,14 @@ using static WaveForm;
 public class MusicBox 
 {
 
-    public static readonly string[] standartInstruments = new string[] { "Click", "Saw", "Sin", "Square" };
+    public static readonly string[] standartInstruments = new string[] { "Click", "Saw", "Sin", "Square", "SynthTap" };
 
     private readonly float _sampleRate;
 
     private SynthInstrument[] _musicBoxInstruments;
     
     private readonly SynthInstrument _musicBoxMethronome;
-    private readonly SynthNote _beatNote = new SynthNote("C", 5, 1, 1.0F);
+    //private readonly SynthNote _beatNote = new SynthNote("C", 5, 1, 1.0F);
     private float _totalGain = 0.0F;
 
     private int _instrumentsCount = 0;
@@ -28,7 +28,7 @@ public class MusicBox
         this._instrumentsCount = inInstruments.Length;
         this._musicBoxInstruments = new SynthInstrument[_instrumentsCount];
 
-        this._musicBoxMethronome = new SynthClick(this._sampleRate, 1.0F);
+        this._musicBoxMethronome = new SynthTap(this._sampleRate, 0.5F);
 
         this._totalGain = inTotalInstrumentsGain + 1.0F; //1.0F - for methronome
         
@@ -42,7 +42,7 @@ public class MusicBox
                 
         this._totalGain += inTotalInstrumentsGain + 1.0F; //1.0F - for methronome
 
-        this._musicBoxMethronome = new SynthClick(this._sampleRate, 1.0F);
+        this._musicBoxMethronome = new SynthTap(this._sampleRate, 0.5F);
 
         
 
@@ -60,6 +60,8 @@ public class MusicBox
                 returnSynthInstrument = new Sin(inSampleRate, inInstrumentsGain); break;
             case "Square":
                 returnSynthInstrument = new Square(inSampleRate, inInstrumentsGain); break;
+            case "SynthTap":
+                returnSynthInstrument = new SynthTap(inSampleRate, inInstrumentsGain); break;
             default:
                 returnSynthInstrument = new WaveForm(inWaveFormSettings, inSampleRate, inInstrumentsGain); break;
         }
@@ -128,14 +130,18 @@ public class MusicBox
                 amplitude += instrumentAmplitude;
             }
         }
-
-        amplitude += this._musicBoxMethronome.PlayNote(inMusicCoordinates, inBeatLentgth) * inMetronomeGain;
+        float methronomeAmp = this._musicBoxMethronome.PlayNote(inMusicCoordinates, inBeatLentgth);
+        /*if (methronomeAmp > 0.0F)
+        {
+            Debug.Log($"methronomeAmp:{methronomeAmp}");
+        }*/
+        amplitude += methronomeAmp;
 
         return amplitude / this._totalGain;
     }
 
-    public void beatStroke(MusicCoordinates inMusicCoordinates) {
-        this._musicBoxMethronome.KeyStroke(this._beatNote, inMusicCoordinates, true);
+    public void beatStroke(MusicCoordinates inMusicCoordinates, SynthNote inSynthNote, bool inTrueNote = true) {
+        this._musicBoxMethronome.KeyStroke(inSynthNote, inMusicCoordinates, inTrueNote);
     }
 
     public void NextNoteStroke(MusicCoordinates inMusicCoordinates) {

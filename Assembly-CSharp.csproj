@@ -72,6 +72,7 @@
     <Compile Include="Assets\Scripts\GameControl\PlayerSkills.cs" />
     <Compile Include="Assets\Scripts\GameControl\Player.cs" />
     <Compile Include="Assets\Scripts\AudioGenerator\SynthInstrument\Saw.cs" />
+    <Compile Include="Assets\Scripts\AudioGenerator\SynthInstrument\SynthTap.cs" />
     <Compile Include="Assets\Scripts\GameControl\LevelGoal\DestroyLevelGoal.cs" />
     <Compile Include="Assets\Scripts\AutoStuff\MovingAlongStaff.cs" />
     <Compile Include="Assets\Scripts\AudioGenerator\SynthInstrument.cs" />

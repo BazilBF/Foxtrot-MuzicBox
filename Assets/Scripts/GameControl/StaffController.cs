@@ -240,9 +240,10 @@ public class StaffController : MonoBehaviour
         this._staffInstrument.KeyStroke(inNoteToPlay, inMusicCoordinates, inTrueNote);
     }
 
-    public void PlayerTaped()
+    public BeatPuck PlayerTaped()
     {
-        
+
+        BeatPuck returnNote = null;
         if (this._currentState == CurrentState.Playing)
         {
             GameObject nextPuck;
@@ -258,20 +259,27 @@ public class StaffController : MonoBehaviour
                 BeatPuck nextPuckScript = nextPuck.GetComponent<BeatPuck>();
                 BeatPuck.PuckType nextPuckType = nextPuckScript.GetPuckType();
 
-                if (nextPuckDistance <= this._winDistance && !nextPuckScript.GetPlayerTapped() && nextPuckScript.GetPuckType() != BeatPuck.PuckType.Mine)
+                if (!nextPuckScript.GetPlayerTapped())
                 {
-                    float deltaWinDistance = 1.0F - (nextPuckDistance / this._winDistance);
-                    this._nextDeltaWinDistance = deltaWinDistance;
-                    int colorIndex = this._parentScript.AddScore(this._nextDeltaWinDistance,(nextPuckType == BeatPuck.PuckType.Bonus));
-                    UnityEngine.Color tmpCurrentColor = this.winColors[colorIndex];
-                    nextPuckScript.SetTrueNote(deltaWinDistance, tmpCurrentColor);
+                    if (nextPuckDistance <= this._winDistance && nextPuckScript.GetPuckType() != BeatPuck.PuckType.Mine)
+                    {
+                        float deltaWinDistance = 1.0F - (nextPuckDistance / this._winDistance);
+                        this._nextDeltaWinDistance = deltaWinDistance;
+                        int colorIndex = this._parentScript.AddScore(this._nextDeltaWinDistance, (nextPuckType == BeatPuck.PuckType.Bonus));
+                        UnityEngine.Color tmpCurrentColor = this.winColors[colorIndex];
+                        nextPuckScript.SetTrueNote(deltaWinDistance, tmpCurrentColor);
+                    }
+                    else
+                    {
+                        nextPuckScript.SetFalseNote();
+                    }
+                    nextPuckScript.SetPlayerTapped();
+
+                    returnNote = nextPuckScript;
                 }
-                else {
-                    nextPuckScript.SetFalseNote();
-                }
-                nextPuckScript.SetPlayerTapped();
             }
         }
+        return returnNote; 
     }
 
     public float GetDeltaDistance(int inPuckVisibilityFlag = 1) {

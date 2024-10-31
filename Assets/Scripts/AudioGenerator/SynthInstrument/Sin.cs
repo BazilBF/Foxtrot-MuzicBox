@@ -11,7 +11,7 @@ public class Sin : SynthInstrument
         this.waveType = Wave.Sin;
         this.canSustain = true;
         this.modulatingGaing = 0.2F;
-        this.distortionFlg = false;
+        
 
 
     }

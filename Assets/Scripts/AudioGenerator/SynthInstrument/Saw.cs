@@ -11,7 +11,7 @@ public class Saw : SynthInstrument
         this.waveType = Wave.Saw;
         this.canSustain = true;
         this.modulatingGaing = 0.0F;
-        this.distortionFlg = false;
+        
 
     }
 }

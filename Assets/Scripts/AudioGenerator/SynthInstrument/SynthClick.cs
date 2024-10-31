@@ -11,7 +11,7 @@ public class SynthClick : SynthInstrument
         this.fadeLength = 0.8F;
         this.waveType = Wave.WhiteNoise;
         this.modulatingGaing = 0;
-        this.distortionFlg = false;
+        
 
     }
     protected override float FaidGain(double inFadePhase)

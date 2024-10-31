@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using Unity.VisualScripting;
 
 
 public enum Wave
@@ -26,10 +27,12 @@ public class SynthInstrument
 
     protected float fadeLength = 2.0F; //length of Fade Phase as a part of Beat
 
-    protected static float pulseLength = 0.1F; // lehgth of the pulse
+    protected float pulseLength = 0.1F; // lehgth of the pulse
 
-    protected bool distortionFlg = true; // apply distortion to frequency
-    protected float distortionGain = 0.3F;
+    
+    protected float distortionGain = 0.0F;
+
+    protected float noiseLevel = 0.0F;
 
     protected bool canSustain = false;
 
@@ -79,14 +82,19 @@ public class SynthInstrument
 
             amplitude = this.GetAmplitude();
 
-            if (this.distortionFlg)
+            if (this.distortionGain>0.0F)
             {
                 amplitude = this.GetdistortionGain(amplitude);
             }
 
             if (!this._trueNote)
             {
-                amplitude = amplitude * (0.8F + 0.2F * (float)SynthInstrument._randObj.NextDouble());
+                amplitude *= (0.8F + 0.2F * (float)SynthInstrument._randObj.NextDouble());
+            }
+
+            if (this.noiseLevel>0.0F) {
+                float baseAmp = 1.0F - this.noiseLevel;
+                amplitude *= (baseAmp + this.noiseLevel * (float)SynthInstrument._randObj.NextDouble());
             }
             
             ChangePhase(inPitchCoef);
@@ -158,7 +166,7 @@ public class SynthInstrument
     protected virtual float GetdistortionGain(float inAmplitude) {
         float distortedAmplitude = inAmplitude;
         //distortedAmplitude = inAmplitude * (float) Math.Pow(inAmplitude,3);
-        distortedAmplitude = inAmplitude * (float)Math.Tanh(inAmplitude);
+        distortedAmplitude = (float)Math.Tanh(this.distortionGain*inAmplitude);
         return distortedAmplitude;
     }
 
@@ -166,7 +174,7 @@ public class SynthInstrument
         float amplitude=0.0F;
         try
         {
-            amplitude = SynthInstrument.GetAmplitudeByWave(this._phase, this.waveType) * this.Modulate() * this._instrumentGainCoef * this._noteToPlay.GetGain();
+            amplitude = this.GetAmplitudeByWave(this._phase, this.waveType) * this.Modulate() * this._instrumentGainCoef * this._noteToPlay.GetGain();
 
             if (amplitude > 1.0F)
             {
@@ -184,7 +192,7 @@ public class SynthInstrument
         float mCoef=1;
         if (this.modulatingGaing>0 && this.modulatingGaing <1){
             float modulatingGaingCalc = 1.0F - this.modulatingGaing;
-            float modulateAmplitude = 0.5F + SynthInstrument.GetAmplitudeByWave(this._mPhase, this.mWaveType)/2;
+            float modulateAmplitude = 0.5F + this.GetAmplitudeByWave(this._mPhase, this.mWaveType)/2;
             mCoef = modulatingGaingCalc + this.modulatingGaing * modulateAmplitude;
         }
         
@@ -265,9 +273,9 @@ public class SynthInstrument
         return amplitude;
     }
 
-    public static float GetPulse(float inPhase){
+    public static float GetPulse(float inPhase, float inPulseLength){
         float amplitude = 0;
-        if (inPhase < SynthInstrument.pulseLength && inPhase >= 0)
+        if (inPhase < inPulseLength && inPhase >= 0)
         {
             amplitude = 1;
         }
@@ -303,11 +311,11 @@ public class SynthInstrument
         return this._readyToChange;
     }
 
-    public static float GetAmplitudeByWave(float inPhase, Wave inWaveType){
+    public float GetAmplitudeByWave(float inPhase, Wave inWaveType){
         float amplitude = 0;
         switch(inWaveType){
             case Wave.Pulse:
-                amplitude=SynthInstrument.GetPulse(inPhase);
+                amplitude=SynthInstrument.GetPulse(inPhase,this.pulseLength);
                 break;
             case Wave.Square:
                 amplitude=SynthInstrument.GetSquare(inPhase);
