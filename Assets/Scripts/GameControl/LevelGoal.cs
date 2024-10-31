@@ -60,7 +60,10 @@ public class LevelGoal
     }
 
     virtual protected int ProcessAndReturnScore(int inScoreMarkIndex, bool inIsBonus) {
-        return 100;
+        float scoreMarkMod = LevelGoal._MarksModifier[inScoreMarkIndex];
+        float bonusMod = (inIsBonus ? 1.5F:1.0F);
+        
+        return (int)(scoreMarkMod*bonusMod* 100);
     }
 
     virtual protected int ProcessAndReturnDamage()

@@ -76,7 +76,7 @@ public class LevelProgressController
         this._marksCount[scoreMarkIndex]++;
 
 
-        int scoreToAdd = this._targetGoal.AddScore(scoreMarkIndex, this._comboCount, inIsBonus);
+        int scoreToAdd = (this._comboCount + 1) * this._targetGoal.AddScore(scoreMarkIndex, this._comboCount, inIsBonus);
 
         this._playerInfo.AddScore(scoreToAdd);
         this._levelScore += scoreToAdd;
