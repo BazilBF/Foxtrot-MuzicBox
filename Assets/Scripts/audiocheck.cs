@@ -6,7 +6,7 @@ using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Policy;
 using System.Threading.Tasks;
-
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -16,6 +16,10 @@ public class GameController : MonoBehaviour
 {
 
     public GameObject gameFieldPrefab = null;
+    public GameObject particleSystem = null;
+    public GameObject grid = null;
+
+    private float _particleStartSpeed = 0.0F;
 
     private LevelProgressController _levelProgressController;
 
@@ -55,7 +59,7 @@ public class GameController : MonoBehaviour
     //private int _activeGameFieldBeat32sCount = 0;
 
     private GameObject _nextGameField = null;
-    public GameObject _Grid = null;
+    
 
     private float _gameWorldWidth = 0.0F;
     private float _gameWorldHeight = 0.0F;
@@ -98,12 +102,17 @@ public class GameController : MonoBehaviour
     private int _maxInstrumentsCount = 0;
     private float _maxInstrumentsGain = 0.0F;
 
-    private Dictionary<string, WaveForm.WaveFormSettings> _waveFormSettings = new Dictionary<string, WaveForm.WaveFormSettings>(); 
+    private Dictionary<string, WaveForm.WaveFormSettings> _waveFormSettings = new Dictionary<string, WaveForm.WaveFormSettings>();
 
     private AudioSource _audioSource;
     private float _currentGain;
 
     private float _horizonHeight = 0.7F;
+
+    private UnityEngine.Color[] _gridDefaultColors = new UnityEngine.Color[] { UnityEngine.Color.red, UnityEngine.Color.blue };
+    private UnityEngine.Color[] _gridCurrentColors = null;
+
+    private int _lastActivedSkill = -1;
 
     // Start is called before the first frame update
     void Awake()
@@ -118,7 +127,8 @@ public class GameController : MonoBehaviour
 
         this.LoadUserData();
 
-        switch (this._activePlayer.GetDifficulty()) {
+        switch (this._activePlayer.GetDifficulty())
+        {
             case Player.Difficulty.Medium: this._beatOffset = 5; break;
             case Player.Difficulty.Hard: this._beatOffset = 4; break;
             default: this._beatOffset = 6; break;
@@ -129,9 +139,11 @@ public class GameController : MonoBehaviour
         this._activeLevel = GameData.RythmLevel.LoadSynthTrack(this._activePlayer.GetCurrentLevelFileName());
 
         StringCollection uniqueInstruments = this._activeLevel.GetUniqueInstruments();
-        for (int i=0; i < uniqueInstruments.Count; i++) {
-            if (Array.IndexOf(MusicBox.standartInstruments, uniqueInstruments[i])<0) {
-                _waveFormSettings[uniqueInstruments[i]] = WaveForm.LoadInstrumentData(uniqueInstruments[i],this);
+        for (int i = 0; i < uniqueInstruments.Count; i++)
+        {
+            if (Array.IndexOf(MusicBox.standartInstruments, uniqueInstruments[i]) < 0)
+            {
+                _waveFormSettings[uniqueInstruments[i]] = WaveForm.LoadInstrumentData(uniqueInstruments[i], this);
             }
         }
 
@@ -150,10 +162,14 @@ public class GameController : MonoBehaviour
 
         this.SetGameWorldSize();
 
+        this.particleSystem.transform.localPosition = new Vector3(0, this._gameWorldHeight * this._horizonHeight / 2.0F, 0.0F);
+        this._particleStartSpeed = 1.0F;
+
         this._activeGameField = Instantiate(this.gameFieldPrefab, this.transform);
 
-        if (this._Grid != null) {
-            this._Grid.GetComponent<NetRenderer>().SetNetRenderer(20,0.8F,new Vector2(-1.0F*this._gameWorldWidth/2.0F,this.GetHorizonLevel()), this._gameWorldWidth, GetHorizonLevel() + (this._gameWorldHeight/2.0f), UnityEngine.Color.red, UnityEngine.Color.blue, 10.0f*(float)this.GetBeat32LentgthSec());
+        if (this.grid != null)
+        {
+            this.grid.GetComponent<NetRenderer>().SetNetRenderer(40, 0.8F, new Vector2(-1.0F * this._gameWorldWidth / 2.0F, this.GetHorizonLevel()), this._gameWorldWidth, GetHorizonLevel() + (this._gameWorldHeight / 2.0f), UnityEngine.Color.red, UnityEngine.Color.blue, 10.0f * (float)this.GetBeat32LentgthSec());
         }
 
         FieldContainer activeFieldContainerScript = this._activeGameField.GetComponent<FieldContainer>();
@@ -163,16 +179,20 @@ public class GameController : MonoBehaviour
         Time.timeScale = 0.0F;
         this._audioSource.Pause();
 
+        this._audioSource.reverbZoneMix = 0.5F;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (this._isPaused && Time.timeScale != 0.0F) {
+        if (this._isPaused && Time.timeScale != 0.0F)
+        {
             Time.timeScale = 0.0F;
             this._audioSource.Pause();
         }
-        else if (!this._isPaused && Time.timeScale != 1.0F) {
+        else if (!this._isPaused && Time.timeScale != 1.0F)
+        {
             Time.timeScale = 1.0F;
             this._audioSource.UnPause();
         }
@@ -198,7 +218,8 @@ public class GameController : MonoBehaviour
             this._beatIsSet = false;
         }
 
-        if (this._beat32IsSet) {
+        if (this._beat32IsSet)
+        {
             MusicCoordinates tmpCoordinates = MusicCoordinates.GetCopy(this._musicCoordinatesPlayed);
 
             if (!this._beatOffsetPlayed && tmpCoordinates.GetTotalBeats() - this.GetBeatOffset() >= 0)
@@ -243,12 +264,14 @@ public class GameController : MonoBehaviour
                 else if (this._roundStarted && currentLevelGoalState != LevelGoal.LevelGoalState.Lost)
                 {
                     this.ChangeActiveGameField();
+
                     this._beatOffsetPlayed = false;
                 }
             }
         }
 
-        if (this._speedCoef != this._activePlayer.GetGameSpeedCoef()) {
+        if (this._speedCoef != this._activePlayer.GetGameSpeedCoef())
+        {
             this.StartChangingSpeed(this._activePlayer.GetGameSpeedCoef());
         }
 
@@ -258,120 +281,189 @@ public class GameController : MonoBehaviour
         }
 
         this.ChangeSpeedAndPitch();
+        this.ProcessGridColor();
     }
 
-    public void TogglePause() {
-        if (this._isPaused) {
+    public void TogglePause()
+    {
+        if (this._isPaused)
+        {
             this._isPaused = false;
         }
-        else {
+        else
+        {
             this._isPaused = true;
         }
     }
 
-    public bool CheckIsPaused() {
+    public bool CheckIsPaused()
+    {
         return this._isPaused;
     }
 
-    public Dictionary<string, WaveForm.WaveFormSettings> GetWaveFormSettings() { 
-        return this._waveFormSettings; 
+    public void ToggleSkill(int inSkillIndex)
+    {
+        bool[] toggleResult = this._activePlayer.ToggleSkill(inSkillIndex);
+        if (toggleResult[0] && toggleResult[1])
+        {
+            this._lastActivedSkill = inSkillIndex;
+            this._gridCurrentColors = this._activePlayer.GetGridColor();
+            if (this.grid != null)
+            {
+                this.grid.GetComponent<NetRenderer>().StartChangeColor(this._gridCurrentColors[0], this._gridCurrentColors[1], this._changeSpeedDuration);
+            }
+        }
     }
 
-    public Vector2 GetWorldSize() {
+    public void ProcessGridColor()
+    {
+        if (this._lastActivedSkill >= 0)
+        {
+            if (this._activePlayer.GetLastActivatedSkill() == -1)
+            {
+                this._lastActivedSkill = -1;
+                this._gridCurrentColors = null;
+                if (this.grid != null)
+                {
+                    this.grid.GetComponent<NetRenderer>().StartChangeColor(this._gridDefaultColors[0], this._gridDefaultColors[1], this._changeSpeedDuration);
+                }
+
+
+            }
+            else if (this._activePlayer.GetLastActivatedSkill() != this._lastActivedSkill)
+            {
+                if (this.grid != null)
+                {
+                    this._lastActivedSkill = this._activePlayer.GetLastActivatedSkill();
+                    this._gridCurrentColors = this._activePlayer.GetGridColor();
+                    this.grid.GetComponent<NetRenderer>().StartChangeColor(this._gridCurrentColors[0], this._gridCurrentColors[1], this._changeSpeedDuration);
+                }
+            }
+        }
+    }
+
+    public Dictionary<string, WaveForm.WaveFormSettings> GetWaveFormSettings()
+    {
+        return this._waveFormSettings;
+    }
+
+    public Vector2 GetWorldSize()
+    {
         return new Vector2(this._gameWorldWidth, this._gameWorldHeight);
     }
 
-    public MusicCoordinates GetMusicCoordinates() {
+    public MusicCoordinates GetMusicCoordinates()
+    {
         return this._musicCoordinatesPlayed;
     }
 
-    public float GetMaxInstrumentsGain() { 
+    public float GetMaxInstrumentsGain()
+    {
         return this._maxInstrumentsGain;
     }
 
 
-    public GameData.RythmLevel GetActiveRythmLevel() {
+    public GameData.RythmLevel GetActiveRythmLevel()
+    {
         return this._activeLevel;
     }
 
-    public float GetGUIOffset() {
+    public float GetGUIOffset()
+    {
         return this._offsetGUI;
     }
 
-    public float GetHorizonLevel() { 
+    public float GetHorizonLevel()
+    {
         return (this._gameWorldHeight * this._horizonHeight) / 2.0F;
     }
 
-    public int GetBeatsPerBarr() {
+    public int GetBeatsPerBarr()
+    {
         return this._measure * 2;
     }
 
-    public int GetBeatOffset() {
+    public int GetBeatOffset()
+    {
         return this._beatOffset;
     }
 
-    public int GetBpm() {
+    public int GetBpm()
+    {
         int tmpBpm = (int)(this._bpm * this._currentSpeedCoef);
         return (tmpBpm >= 1 ? tmpBpm : 1);
     }
 
-    public double GetBps() {
+    public double GetBps()
+    {
         double tmpBps = ((double)(this.GetBpm()) / 60.0);
         return (tmpBps >= 1.0 ? tmpBps : 1.0);
     }
 
     public double GetBeatLentgthSec()
     {
-        return 1.0/this.GetBps();
+        return 1.0 / this.GetBps();
     }
 
-    public double GetBeat32LentgthSec() {
+    public double GetBeat32LentgthSec()
+    {
         return this.GetBeatLentgthSec() / (32 / this._length);
     }
 
-    public int GetSamplesPerBeat32() {
-        
+    public int GetSamplesPerBeat32()
+    {
+
         return (int)(this._sampleRate / (this.GetBps())) / (32 / this._length);
     }
 
-    public float GetSampleRate() {
+    public float GetSampleRate()
+    {
         return this._sampleRate;
     }
 
-    public float GetMineOffset() {
+    public float GetMineOffset()
+    {
         return this._mineOffset;
     }
 
-    public LevelProgressController GetLevelProgressController() {
+    public LevelProgressController GetLevelProgressController()
+    {
         return this._levelProgressController;
     }
 
-    public bool GetDemoMode() {
+    public bool GetDemoMode()
+    {
         return this._demoMode;
     }
 
-    public float GetBonusProb() {
+    public float GetBonusProb()
+    {
         return this._defaultBonusProb;
     }
 
-    public AudioSource GetAudioSource() {
+    public AudioSource GetAudioSource()
+    {
         return this._audioSource;
     }
 
-    public float GetCurrentSpeedCoef() {
+    public float GetCurrentSpeedCoef()
+    {
         return this._currentSpeedCoef;
     }
 
-    public void EndTry() {
-        
+    public void EndTry()
+    {
+
         this._activePlayer.LoadScene(GameController._mainMenuSceneId);
     }
 
-    public float GetPlayedPhase() {
+    public float GetPlayedPhase()
+    {
         return (float)this._musicCoordinatesPlayed.GetTotalBeat32s() / (float)this._activePartStaffsData.GetBeat32sCount();
     }
 
-    private void ChangeActiveGameField (){
+    private void ChangeActiveGameField()
+    {
 
         GameObject dissmisGameField = this._activeGameField;
         FieldContainer dissmisGameFieldScript = dissmisGameField.GetComponent<FieldContainer>();
@@ -389,11 +481,12 @@ public class GameController : MonoBehaviour
 
     }
 
-    
 
-    private void SpawnNextGameField() {
 
-        this._nextPartStaffsData = this._activeLevel.LoadSynth(this._levelProgressController.GetLevelGoalState(),this._activePlayer.GetDifficulty());
+    private void SpawnNextGameField()
+    {
+
+        this._nextPartStaffsData = this._activeLevel.LoadSynth(this._levelProgressController.GetLevelGoalState(), this._activePlayer.GetDifficulty());
         this._nextGameField = Instantiate(this.gameFieldPrefab, this.transform);
         FieldContainer nextFieldContainerScript = this._nextGameField.GetComponent<FieldContainer>();
         nextFieldContainerScript.SetPartStaffData(this._nextPartStaffsData);
@@ -402,7 +495,8 @@ public class GameController : MonoBehaviour
 
     }
 
-    public static string GetStreamedText(string inpath) {
+    public static string GetStreamedText(string inpath)
+    {
         string path = $"{Application.streamingAssetsPath}{Path.DirectorySeparatorChar}{inpath}";
         UnityEngine.Networking.UnityWebRequest www = UnityEngine.Networking.UnityWebRequest.Get(path);
         www.SendWebRequest();
@@ -427,17 +521,18 @@ public class GameController : MonoBehaviour
 
     void OnAudioFilterRead(float[] data, int channels)
     {
-        for (int i = 0; i < data.Length; i += channels) {
+        for (int i = 0; i < data.Length; i += channels)
+        {
             float metronomeGain = 0.1F;
             if (this._musicCoordinatesPlayed.GetSamples() == 0)
             {
-                MusicCoordinates tmpCoordinates = MusicCoordinates.GetCopy(this._musicCoordinatesPlayed); 
+                MusicCoordinates tmpCoordinates = MusicCoordinates.GetCopy(this._musicCoordinatesPlayed);
                 if (this._musicCoordinatesPlayed.GetBeat32s() == 0)
                 {
-                    
+
 
                     this._beatIsSet = true;
-                    
+
                 }
                 this._fieldContainer.NextNoteStroke(tmpCoordinates);
                 this._beat32IsSet = true;
@@ -458,7 +553,8 @@ public class GameController : MonoBehaviour
     private void LoadUserData()
     {
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-        if (playerObject != null) {
+        if (playerObject != null)
+        {
             PlayerController playerController = playerObject.GetComponent<PlayerController>();
             this._activePlayer = playerController.GetActivePlayer();
             this._activePlayer.SetPitchCoef(this._pitchCoef);
@@ -466,14 +562,15 @@ public class GameController : MonoBehaviour
             this._activePlayer.UpdateSkills();
             Debug.Log("Found player");
         }
-        else {
+        else
+        {
             this._activePlayer = new Player();
             this._activePlayer.CheckAndLoadAvaibleLevelMetadata(GameController.synthMusicFolder);
             Debug.Log("New player");
         }
         this._currentPitchCoef = this._activePlayer.GetPitchCoef();
         this._currentSpeedCoef = this._activePlayer.GetGameSpeedCoef();
-     
+
 
     }
 
@@ -482,16 +579,19 @@ public class GameController : MonoBehaviour
         return this._activePlayer;
     }
 
-    public float GetCurrentGain() {
+    public float GetCurrentGain()
+    {
         return this._currentGain;
     }
 
-    public void SetMusicCoordinates(int inBars, int inBeats, int inBeats32) {
-        this._musicCoordinatesPlayed = new MusicCoordinates(inBars, inBeats, inBeats32, this._musicCoordinatesPlayed.GetSamples(),this._musicCoordinatesPlayed.GetLength(),this._musicCoordinatesPlayed.GetMeasure(), this);
+    public void SetMusicCoordinates(int inBars, int inBeats, int inBeats32)
+    {
+        this._musicCoordinatesPlayed = new MusicCoordinates(inBars, inBeats, inBeats32, this._musicCoordinatesPlayed.GetSamples(), this._musicCoordinatesPlayed.GetLength(), this._musicCoordinatesPlayed.GetMeasure(), this);
     }
 
 
-    private void SetGameWorldSize() {
+    private void SetGameWorldSize()
+    {
 
         Debug.Log($"Screen: {Screen.width} x {Screen.height}");
 
@@ -503,7 +603,7 @@ public class GameController : MonoBehaviour
         this._gameWorldHeight = this.inGameScreenTopRight.y - this.inGameScreenDownLeft.y;
         this._gameWorldWidth = this.inGameScreenTopRight.x - this.inGameScreenDownLeft.x;
 
-        
+
 
         //Instantiate(this.backGround, new Vector3(0, 0, 0), Quaternion.identity);
 
@@ -516,20 +616,24 @@ public class GameController : MonoBehaviour
 
     private void ChangeSpeedAndPitch()
     {
-        if (this._deltaChangeSpeedPerSecond != 0.0F) {
+        if (this._deltaChangeSpeedPerSecond != 0.0F)
+        {
             float newSpeedCoef = this._currentSpeedCoef + this._deltaChangeSpeedPerSecond * Time.deltaTime;
             if (Math.Abs(newSpeedCoef - this._speedCoef) > Math.Abs(this._deltaChangeSpeedPerSecond))
             {
                 this._currentSpeedCoef = newSpeedCoef;
             }
-            else {
+            else
+            {
                 this._deltaChangeSpeedPerSecond = 0.0F;
                 this._currentSpeedCoef = this._speedCoef;
             }
-            if (this._Grid != null) {
-                this._Grid.GetComponent<NetRenderer>().SetDuration(10.0F*(float)this.GetBeat32LentgthSec());
+            if (this.grid != null)
+            {
+                this.grid.GetComponent<NetRenderer>().SetDuration(10.0F * (float)this.GetBeat32LentgthSec());
             }
-
+            var psMain = this.particleSystem.GetComponent<ParticleSystem>().main;
+            psMain.startSpeed = this._particleStartSpeed * this._currentSpeedCoef;
 
         }
 
@@ -549,8 +653,9 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void StartChangingSpeed(float inNewSpeedCoef) {
-        this._deltaChangeSpeedPerSecond = (inNewSpeedCoef - this._speedCoef)/this._changeSpeedDuration;
+    public void StartChangingSpeed(float inNewSpeedCoef)
+    {
+        this._deltaChangeSpeedPerSecond = (inNewSpeedCoef - this._speedCoef) / this._changeSpeedDuration;
         this._speedCoef = inNewSpeedCoef;
     }
 

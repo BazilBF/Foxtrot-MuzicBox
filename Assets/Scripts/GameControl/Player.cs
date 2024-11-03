@@ -15,7 +15,7 @@ using UnityEngine.SceneManagement;
 public class Player
 {
 
-    private static readonly string defaultSettings= @"
+    private static readonly string defaultSettings = @"
         {
 	        ""playerName"":""TestSubject"",
 	        ""playerXP"":0,
@@ -31,13 +31,14 @@ public class Player
         }
         ";
     [Serializable]
-    private class PlayerDataToSave {
+    private class PlayerDataToSave
+    {
 
         public string playerName;
         public int playerXP;
         public int playerLevel;
         public int playerScore;
-        
+
 
         public string[] staffsKeys;
         public string[] skillsKeys;
@@ -48,7 +49,8 @@ public class Player
         public List<bool> skillStatus = new List<bool>();
     }
     [Serializable]
-    private class LevelMetaData {
+    private class LevelMetaData
+    {
         public string fileName;
         public string name;
         public string goalType;
@@ -65,7 +67,7 @@ public class Player
             new int[] { 0, 0, 0}
         };
 
-        public int[] maxLevelScores = new int[] {0, 0, 0 };
+        public int[] maxLevelScores = new int[] { 0, 0, 0 };
         public int[] playsCnt = new int[] { 0, 0, 0 };
         public int[] winsCnt = new int[] { 0, 0, 0 };
         public int[] maxLevelMark = new int[] { 0, 0, 0 };
@@ -107,6 +109,8 @@ public class Player
     private int _currentNoteCount;
 
     private bool[] _progressImproveRate;
+    private int _lastActivedSkill = -1;
+    private UnityEngine.Color[] _gridColors;
 
 
     public enum Difficulty
@@ -116,7 +120,8 @@ public class Player
         Hard
     }
 
-    public Player() {
+    public Player()
+    {
         this.LoadSettings();
         this.UpdateSkills();
 
@@ -124,23 +129,28 @@ public class Player
     }
 
 
-    public void AddLevelMarksCounts(LevelProgressController inLevelProgressController) {
-        for (int i = 0; i < 6; i++) { 
+    public void AddLevelMarksCounts(LevelProgressController inLevelProgressController)
+    {
+        for (int i = 0; i < 6; i++)
+        {
             this._currentDataToSave.levelMetadata[this._currentLevel].marksCounts[i][(int)this.GetDifficulty()] += inLevelProgressController.GetMarksCount(i);
         }
         this._currentDataToSave.levelMetadata[this._currentLevel].marksCounts[6][(int)this.GetDifficulty()] += inLevelProgressController.GetNoteCount();
     }
 
-    public int[][] GetLevelMarksCount(int inIndex) {
-        int[][] marksCount= null;
+    public int[][] GetLevelMarksCount(int inIndex)
+    {
+        int[][] marksCount = null;
         LevelMetaData tmpLevelMetaData = this._currentDataToSave.levelMetadata.ElementAtOrDefault(inIndex);
-        if (tmpLevelMetaData != null) {
+        if (tmpLevelMetaData != null)
+        {
             marksCount = tmpLevelMetaData.marksCounts;
         }
         return marksCount;
     }
 
-    public bool LoadSettings() {
+    public bool LoadSettings()
+    {
         Debug.Log($"Default settings: {Player.defaultSettings}");
         string tmpSettingsStr = PlayerPrefs.GetString("PlayerSettings", Player.defaultSettings);
         Debug.Log($"Loaded settings: {tmpSettingsStr}");
@@ -148,16 +158,19 @@ public class Player
         return (tmpSettingsStr != Player.defaultSettings);
     }
 
-    public void CheckAndLoadAvaibleLevelMetadata(string inPath) {
+    public void CheckAndLoadAvaibleLevelMetadata(string inPath)
+    {
 
 
         string data = GameController.GetStreamedText($"{inPath}LevelList.json");
         LevelList levelListObj = JsonUtility.FromJson<LevelList>(data);
 
-        if (levelListObj.levelDataFiles.Count != this._currentDataToSave.levelMetadata.Count) {
+        if (levelListObj.levelDataFiles.Count != this._currentDataToSave.levelMetadata.Count)
+        {
             //TODO: add proper processes - add in metadata levelID check that all levels are present in metadata
             this._currentDataToSave.levelMetadata.Clear();
-            for (int i = 0; i < levelListObj.levelDataFiles.Count; i++) {
+            for (int i = 0; i < levelListObj.levelDataFiles.Count; i++)
+            {
                 string fileName = levelListObj.levelDataFiles[i];
                 data = GameController.GetStreamedText($"{inPath}{fileName}.json");
 
@@ -172,7 +185,8 @@ public class Player
 
 
 
-    public int GetAvaibleLevelCount() {
+    public int GetAvaibleLevelCount()
+    {
         return this._currentDataToSave.levelMetadata.Count;
     }
     public LevelGoal.LevelGoalState GetLevelGoalState()
@@ -196,7 +210,8 @@ public class Player
 
     }
 
-    public string GetCurrentLevelFileName() {
+    public string GetCurrentLevelFileName()
+    {
         return this.GetFileName(this._currentLevel);
     }
 
@@ -235,7 +250,8 @@ public class Player
 
     }
 
-    public int[][] GetTotalMarksCount() {
+    public int[][] GetTotalMarksCount()
+    {
         int[][] resultMarksCount = new int[][]{
             new int[] { 0, 0, 0},
             new int[] { 0, 0, 0},
@@ -246,9 +262,10 @@ public class Player
             new int[] { 0, 0, 0}
         };
 
-        for (int i = 0; i < this._currentDataToSave.levelMetadata.Count; i++ )
+        for (int i = 0; i < this._currentDataToSave.levelMetadata.Count; i++)
         {
-            for (int y=0; y < resultMarksCount.Length; y++) {
+            for (int y = 0; y < resultMarksCount.Length; y++)
+            {
                 resultMarksCount[y][0] += this._currentDataToSave.levelMetadata[i].marksCounts[y][0];
                 resultMarksCount[y][1] += this._currentDataToSave.levelMetadata[i].marksCounts[y][1];
                 resultMarksCount[y][2] += this._currentDataToSave.levelMetadata[i].marksCounts[y][2];
@@ -258,13 +275,15 @@ public class Player
         return resultMarksCount;
     }
 
-    public void SaveSettings() {
+    public void SaveSettings()
+    {
         string tmpSettingsStr = JsonUtility.ToJson(this._currentDataToSave);
         PlayerPrefs.SetString("PlayerSettings", tmpSettingsStr);
         PlayerPrefs.Save();
     }
 
-    public void PrepareAndSaveData(LevelProgressController inLeverProgressController) {
+    public void PrepareAndSaveData(LevelProgressController inLeverProgressController)
+    {
         this._previousMaxScore = this._currentDataToSave.levelMetadata[this._currentLevel].maxLevelScores[(int)this._difficulty];
         this._previousMaxComboLength = this._currentDataToSave.levelMetadata[this._currentLevel].maxComboLength[(int)this._difficulty];
         this._previousMaxComboChainsCount = this._currentDataToSave.levelMetadata[this._currentLevel].maxComboChainsCount[(int)this._difficulty];
@@ -274,7 +293,7 @@ public class Player
 
         int marksCount = inLeverProgressController.GetMarksLength();
         this._currentLevelMark = inLeverProgressController.CalculateLevelMark();
-        bool[] result = new bool[] { false, false, false, false};
+        bool[] result = new bool[] { false, false, false, false };
         bool levelWon = this._levelGoalState == LevelGoal.LevelGoalState.Won;
 
         this._currentMarksCounts = inLeverProgressController.GetMarksCount();
@@ -289,9 +308,11 @@ public class Player
         }
 
         this._currentLevelScore = inLeverProgressController.GetLevelScore();
-        if (this._previousMaxScore < this._currentLevelScore) {
+        if (this._previousMaxScore < this._currentLevelScore)
+        {
             result[0] = true;
-            if (levelWon) {
+            if (levelWon)
+            {
                 this._currentDataToSave.levelMetadata[this._currentLevel].maxLevelScores[(int)this._difficulty] = this._currentLevelScore;
             }
         }
@@ -299,7 +320,7 @@ public class Player
         this._currentMaxComboLength = inLeverProgressController.GetMaxComboCount();
         if (this._previousMaxComboLength < this._currentMaxComboLength)
         {
-            result[1] = true; 
+            result[1] = true;
             if (levelWon)
             {
                 this._currentDataToSave.levelMetadata[this._currentLevel].maxComboLength[(int)this._difficulty] = this._currentMaxComboLength;
@@ -310,7 +331,8 @@ public class Player
         if (this._previousMaxComboChainsCount < this._currentComboChainsCount)
         {
             result[2] = true;
-            if (levelWon) { 
+            if (levelWon)
+            {
                 this._currentDataToSave.levelMetadata[this._currentLevel].maxComboChainsCount[(int)this._difficulty] = this._currentComboChainsCount;
             }
         }
@@ -324,7 +346,8 @@ public class Player
             }
         }
 
-        if (levelWon) {
+        if (levelWon)
+        {
             this._currentDataToSave.levelMetadata[this._currentLevel].winsCnt[(int)this._difficulty]++;
         }
         this._currentDataToSave.levelMetadata[this._currentLevel].playsCnt[(int)this._difficulty]++;
@@ -334,36 +357,58 @@ public class Player
         this.SaveSettings();
     }
 
-    public void UpdateSkills() {
+    public void UpdateSkills()
+    {
         Debug.Log("Updating skills");
         this._avaibleSkills.Clear();
-        for (int i=0; i < this._currentDataToSave.skillStatus.Count; i++) {
+        for (int i = 0; i < this._currentDataToSave.skillStatus.Count; i++)
+        {
             PlayerSkill tmpSkill = PlayerSkill.GetSkill(this, i, this._currentDataToSave.skillStatus[i]);
             Debug.Log($"Processing skill {tmpSkill.GetSkillName()}");
             this._avaibleSkills.Add(tmpSkill);
         }
     }
 
-    public void UpdateRoutine(float inDeltaTime) {
+    public void UpdateRoutine(float inDeltaTime)
+    {
         this.SkillControl(inDeltaTime);
         this.RegenEnergy(inDeltaTime);
     }
 
-    public void SkillControl(float inDeltaTime) {
-        for (int i = 0; i < this._avaibleSkills.Count; i++) {
-            if (this._avaibleSkills[i].CheckAvailble()) {
+    public void SkillControl(float inDeltaTime)
+    {
+        for (int i = 0; i < this._avaibleSkills.Count; i++)
+        {
+            if (this._avaibleSkills[i].CheckAvailble())
+            {
                 this._avaibleSkills[i].SkillControl(inDeltaTime);
-            } 
+            }
+            if (i == this._lastActivedSkill && !this._avaibleSkills[i].CheckActive())
+            {
+                this._lastActivedSkill = -1;
+            }
         }
     }
 
-    public int GetSkillCount() {
+    public int GetSkillCount()
+    {
         return this._avaibleSkills.Count;
     }
 
-    public bool[] ToggleSkill(int inSkillIndex) {
+    public UnityEngine.Color[] GetGridColor()
+    {
+        return this._gridColors;
+    }
+
+    public int GetLastActivatedSkill()
+    {
+        return this._lastActivedSkill;
+    }
+
+    public bool[] ToggleSkill(int inSkillIndex)
+    {
         PlayerSkill currentSkill = this._avaibleSkills[inSkillIndex];
-        
+
         bool skillIsToggled = false;
 
         Debug.Log($"Toggle skill {currentSkill.GetSkillName()}");
@@ -374,21 +419,29 @@ public class Player
             if (!skillIsBlocked)
             {
                 skillIsToggled = currentSkill.ActivateSkill();
-                
+                UnityEngine.Color[] currentSkillNetColors = currentSkill.GetNetColors();
+                if (skillIsToggled && currentSkillNetColors != null)
+                {
+                    this._gridColors = currentSkillNetColors;
+                    this._lastActivedSkill = inSkillIndex;
+                }
             }
         }
-        else {
+        else
+        {
             skillIsToggled = currentSkill.DeactivateSkill();
         }
 
-        return new bool[] { skillIsToggled, currentSkill.CheckActive()};
+        return new bool[] { skillIsToggled, currentSkill.CheckActive() };
     }
 
-    public PlayerSkill GetSkill(int inSkillIndex) {
+    public PlayerSkill GetSkill(int inSkillIndex)
+    {
         return this._avaibleSkills[inSkillIndex];
     }
 
-    public bool CheckSkillIsBlocked(int inSkillIndex) {
+    public bool CheckSkillIsBlocked(int inSkillIndex)
+    {
         PlayerSkill currentSkill = this._avaibleSkills[inSkillIndex];
         int[] blockingSkills = currentSkill.GetBlockingSkills();
 
@@ -410,7 +463,8 @@ public class Player
         return this._currentLevel;
     }
 
-    public void SetCurrentLevel(int inLevelIndex) { 
+    public void SetCurrentLevel(int inLevelIndex)
+    {
         this._currentLevel = inLevelIndex;
     }
 
@@ -425,11 +479,13 @@ public class Player
 
     }
 
-    public void SetDifficulty(int inDifficulty) {
+    public void SetDifficulty(int inDifficulty)
+    {
         this._difficulty = inDifficulty;
     }
 
-    public int[] GetCurrentMarksCounts() {
+    public int[] GetCurrentMarksCounts()
+    {
         return this._currentMarksCounts;
     }
 
@@ -483,7 +539,8 @@ public class Player
         return this._currentDataToSave.skillsKeys;
     }
 
-    public string GetPauseKey() {
+    public string GetPauseKey()
+    {
         return this._currentDataToSave.pauseKey;
     }
 
@@ -492,50 +549,61 @@ public class Player
         this._currentDataToSave.playerScore += inNewScore;
     }
 
-    public void LoadScene(int inSceneId) {
+    public void LoadScene(int inSceneId)
+    {
         SceneManager.LoadScene(inSceneId);
 
     }
 
 
-    public void SpendEnergy(float inEnergyToSpend) {
+    public void SpendEnergy(float inEnergyToSpend)
+    {
         if (this._energy > inEnergyToSpend)
         {
             this._energy -= inEnergyToSpend;
         }
-        else {
+        else
+        {
             this._energy = 0;
         }
     }
 
-    public void RegenEnergy(float inDeltaTime) {
-        if (this._energy < this._energyMax) { 
-            float newEnergyValue = inDeltaTime*(this._energyMax/this._fullEnergyRegen) + this._energy;
+    public void RegenEnergy(float inDeltaTime)
+    {
+        if (this._energy < this._energyMax)
+        {
+            float newEnergyValue = inDeltaTime * (this._energyMax / this._fullEnergyRegen) + this._energy;
             this._energy = (newEnergyValue < this._energyMax ? newEnergyValue : this._energyMax);
         }
     }
 
-    public float GetEnergyValue() {
+    public float GetEnergyValue()
+    {
         return this._energy;
     }
 
-    public bool CheckActiveSkill(int inSkillId) {
-        return this._avaibleSkills[inSkillId].CheckAvailble() ;
+    public bool CheckActiveSkill(int inSkillId)
+    {
+        return this._avaibleSkills[inSkillId].CheckAvailble();
     }
 
-    public float GetGameSpeedCoef() {
+    public float GetGameSpeedCoef()
+    {
         return this._gameSpeedCoef;
     }
 
-    public float GetPitchCoef() {
+    public float GetPitchCoef()
+    {
         return this._pitchCoef;
     }
 
-    public void SetSpeedCoef(float inNewCoef) { 
+    public void SetSpeedCoef(float inNewCoef)
+    {
         this._gameSpeedCoef = inNewCoef;
     }
 
-    public void SetPitchCoef(float inNewCoef) {
+    public void SetPitchCoef(float inNewCoef)
+    {
         this._pitchCoef = inNewCoef;
     }
 

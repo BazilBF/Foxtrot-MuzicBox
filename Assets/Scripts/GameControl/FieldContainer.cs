@@ -48,7 +48,7 @@ public class FieldContainer : MonoBehaviour
     private float _staffWidth = 0.0F;
 
     private float _staffTopOffset = 0.2F;
-    private float _spawnWidthCoef = 0.1F;
+    private float _spawnWidthCoef = 0.005F;
 
     private Vector2 _worldSize;
 
@@ -77,6 +77,8 @@ public class FieldContainer : MonoBehaviour
     private MusicBox _musicBox;
 
     public CurrentState _currentState = CurrentState.Orbiting;
+
+    private float _maxStaffWidth = 0.25F;
 
     // Start is called before the first frame update
     void Awake()
@@ -208,7 +210,7 @@ public class FieldContainer : MonoBehaviour
         {
             if (Input.GetKeyDown(skillsKeys[i]))
             {
-                this._activePlayer.ToggleSkill(i);
+                this._controller.ToggleSkill(i);
             }
         }
 
@@ -402,6 +404,7 @@ public class FieldContainer : MonoBehaviour
 
         this._staffHeight = backGroundHeight * (1 - this._staffTopOffset);
         this._staffWidth = backGroundWidth / playableIntsrumentsCount;
+        this._staffWidth = (this._staffWidth > backGroundWidth * this._maxStaffWidth ? backGroundWidth * this._maxStaffWidth : this._staffWidth);
         float staffPlayY = this.background.transform.localPosition.y + (backGroundHeight * this._staffTopOffset) / -2.0F;
         float staffPlayX = 0.0F;
         float staffSpawnX = 0.0F;

@@ -12,8 +12,9 @@ public class NightCore : PlayerSkill
         this._cooldown = 5.0F;
         this._duration = 10.0F;
         this._skillName = "NightCore";
-        this._skillDescription = "It's time to dance. All notes are bonus notes but speed increased. Have fun";
+        this._skillDescription = "It's time to dance. Speed increased. Have fun";
         this._blockingSkills = new int[] { 0 };
+        this._netColors = new UnityEngine.Color[] { new UnityEngine.Color(0.0F, 0.6F, 1.0F), new UnityEngine.Color(0.0F, 0.2F, 1.0F) };
     }
 
     protected override void ApplySkill()

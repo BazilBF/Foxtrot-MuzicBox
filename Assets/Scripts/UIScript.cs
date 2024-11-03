@@ -99,7 +99,7 @@ public class UIScript : MonoBehaviour
 
     private void OnToggleSkillClick(ClickEvent clickEvent, int inSkillId)
     {
-        this._player.ToggleSkill(inSkillId);
+        this._controller.ToggleSkill(inSkillId);
     }
 
     private void OnEndTryBtnClick(ClickEvent inEvent)
