@@ -109,14 +109,16 @@ public class SynthInstrument
             }
             else if (currentLength < (this.canSustain? wholeNoteLength:0.0F) + fadeLength)
             {
-                if (!this._readyToChange) { 
-                    this._readyToChange = true;
-                }
+                
                 currentPlayPhase = (currentLength - (this.canSustain ? wholeNoteLength : 0.0)) / fadeLength;
                 amplitude *= this.FaidGain(currentPlayPhase);
                 this._currentAmplitude = amplitude;
             }
             else {
+                if (!this._readyToChange)
+                {
+                    this._readyToChange = true;
+                }
                 this._isPlayingFlg = false;
                 this._currentAmplitude = 0.0F;
             }

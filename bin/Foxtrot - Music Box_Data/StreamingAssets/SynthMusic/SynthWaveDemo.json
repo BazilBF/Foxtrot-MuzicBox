@@ -39,11 +39,29 @@
 						},
 						{
 							"bar":1,
+							"beat":2,
+							"beat32":1,
+							"measure":1,
+							"length":4,
+							"note":"D",
+							"octave":4
+						},
+						{
+							"bar":1,
 							"beat":3,
 							"beat32":1,
 							"measure":1,
 							"length":4,
 							"note":"F#",
+							"octave":4
+						},
+						{
+							"bar":1,
+							"beat":4,
+							"beat32":1,
+							"measure":1,
+							"length":4,
+							"note":"G",
 							"octave":4
 						},
 						{
@@ -63,6 +81,24 @@
 							"length":4,
 							"note":"C#",
 							"octave":5
+						},
+						{
+							"bar":3,
+							"beat":1,
+							"beat32":1,
+							"measure":1,
+							"length":2,
+							"note":"C#",
+							"octave":4
+						},
+						{
+							"bar":3,
+							"beat":3,
+							"beat32":1,
+							"measure":1,
+							"length":2,
+							"note":"D",
+							"octave":4
 						}
 					]
 				}
@@ -91,11 +127,29 @@
 						},
 						{
 							"bar":1,
+							"beat":2,
+							"beat32":1,
+							"measure":1,
+							"length":4,
+							"note":"D",
+							"octave":4
+						},
+						{
+							"bar":1,
 							"beat":3,
 							"beat32":1,
 							"measure":1,
 							"length":4,
 							"note":"F#",
+							"octave":4
+						},
+						{
+							"bar":1,
+							"beat":4,
+							"beat32":1,
+							"measure":1,
+							"length":4,
+							"note":"G",
 							"octave":4
 						},
 						{
@@ -115,6 +169,24 @@
 							"length":4,
 							"note":"C#",
 							"octave":5
+						},
+						{
+							"bar":3,
+							"beat":1,
+							"beat32":1,
+							"measure":1,
+							"length":2,
+							"note":"C#",
+							"octave":4
+						},
+						{
+							"bar":3,
+							"beat":3,
+							"beat32":1,
+							"measure":1,
+							"length":2,
+							"note":"D",
+							"octave":4
 						}
 					]
 				}
@@ -143,11 +215,29 @@
 						},
 						{
 							"bar":1,
+							"beat":2,
+							"beat32":1,
+							"measure":1,
+							"length":4,
+							"note":"D",
+							"octave":4
+						},
+						{
+							"bar":1,
 							"beat":3,
 							"beat32":1,
 							"measure":1,
 							"length":4,
 							"note":"F#",
+							"octave":4
+						},
+						{
+							"bar":1,
+							"beat":4,
+							"beat32":1,
+							"measure":1,
+							"length":4,
+							"note":"G",
 							"octave":4
 						},
 						{
@@ -167,6 +257,24 @@
 							"length":4,
 							"note":"C#",
 							"octave":5
+						},
+						{
+							"bar":3,
+							"beat":1,
+							"beat32":1,
+							"measure":1,
+							"length":2,
+							"note":"C#",
+							"octave":4
+						},
+						{
+							"bar":3,
+							"beat":3,
+							"beat32":1,
+							"measure":1,
+							"length":2,
+							"note":"D",
+							"octave":4
 						}
 					]
 				}
@@ -195,11 +303,29 @@
 						},
 						{
 							"bar":1,
+							"beat":2,
+							"beat32":1,
+							"measure":1,
+							"length":4,
+							"note":"D",
+							"octave":4
+						},
+						{
+							"bar":1,
 							"beat":3,
 							"beat32":1,
 							"measure":1,
 							"length":4,
 							"note":"F#",
+							"octave":4
+						},
+						{
+							"bar":1,
+							"beat":4,
+							"beat32":1,
+							"measure":1,
+							"length":4,
+							"note":"G",
 							"octave":4
 						},
 						{
@@ -219,6 +345,24 @@
 							"length":4,
 							"note":"C#",
 							"octave":5
+						},
+						{
+							"bar":3,
+							"beat":1,
+							"beat32":1,
+							"measure":1,
+							"length":2,
+							"note":"C#",
+							"octave":4
+						},
+						{
+							"bar":3,
+							"beat":3,
+							"beat32":1,
+							"measure":1,
+							"length":2,
+							"note":"D",
+							"octave":4
 						}
 					]
 				}
