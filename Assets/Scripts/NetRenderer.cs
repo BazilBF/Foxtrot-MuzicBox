@@ -22,7 +22,7 @@ public class NetRenderer : MonoBehaviour
 
     private float _duration = 0.0F;
     public Material lineMaterial = null;
-    public float bottomWidthMultipliyer = 10.0F;
+    public float bottomWidthMultipliyer = 1000.0F;
     private LineRenderer _lineRenderer;
 
     private LineRenderer[] _verticalLineRenderers = null;

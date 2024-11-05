@@ -139,13 +139,13 @@ public class WaveForm : SynthInstrument
     private static float[] ReadTextureWaveToArray(Texture2D inTexture, WaveForm.WaveZeroPosition inWaveFormZero, float inLineColorTreshold)
     {
         float[] returnValue = new float[inTexture.width];
-        float zeroPosition = 0.0F;
+        float zeroPosition = 1.0F;
         if (inWaveFormZero == WaveZeroPosition.Middle)
         {
             zeroPosition = 0.5F;
         }
         else if (inWaveFormZero == WaveZeroPosition.Bottom) {
-            zeroPosition = 1.0F;
+            zeroPosition = 0.0F;
         }
 
         float prevValue = 0.0F;
@@ -156,7 +156,7 @@ public class WaveForm : SynthInstrument
                 
                 if (pixelColor.r < inLineColorTreshold && pixelColor.g < inLineColorTreshold && pixelColor.b < inLineColorTreshold) {
                     float yPos = (float)y / (float)inTexture.height;
-                    returnValue[i] = (zeroPosition - yPos)*(inWaveFormZero == WaveZeroPosition.Middle? -2.0F:1.0F);
+                    returnValue[i] = (yPos - zeroPosition) *(inWaveFormZero == WaveZeroPosition.Middle? 2.0F:1.0F);
                     break;
                 }
             }

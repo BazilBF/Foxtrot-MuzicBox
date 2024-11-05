@@ -169,7 +169,7 @@ public class GameController : MonoBehaviour
 
         if (this.grid != null)
         {
-            this.grid.GetComponent<NetRenderer>().SetNetRenderer(40, 0.8F, new Vector2(-1.0F * this._gameWorldWidth / 2.0F, this.GetHorizonLevel()), this._gameWorldWidth, GetHorizonLevel() + (this._gameWorldHeight / 2.0f), UnityEngine.Color.red, UnityEngine.Color.blue, 10.0f * (float)this.GetBeat32LentgthSec());
+            this.grid.GetComponent<NetRenderer>().SetNetRenderer(60, 0.8F, new Vector2(-1.0F * this._gameWorldWidth / 2.0F, this.GetHorizonLevel()), this._gameWorldWidth, GetHorizonLevel() + (this._gameWorldHeight / 2.0f), UnityEngine.Color.red, UnityEngine.Color.blue, 10.0f * (float)this.GetBeat32LentgthSec());
         }
 
         FieldContainer activeFieldContainerScript = this._activeGameField.GetComponent<FieldContainer>();

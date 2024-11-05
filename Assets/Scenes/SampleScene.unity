@@ -5230,7 +5230,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _phase: 0
   lineMaterial: {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
-  bottomWidthMultipliyer: 4
+  bottomWidthMultipliyer: 25
 --- !u!4 &1478928158
 Transform:
   m_ObjectHideFlags: 0

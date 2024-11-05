@@ -48,7 +48,7 @@ public class FieldContainer : MonoBehaviour
     private float _staffWidth = 0.0F;
 
     private float _staffTopOffset = 0.2F;
-    private float _spawnWidthCoef = 0.005F;
+    private float _spawnWidthCoef = 0.025F;
 
     private Vector2 _worldSize;
 
@@ -78,7 +78,7 @@ public class FieldContainer : MonoBehaviour
 
     public CurrentState _currentState = CurrentState.Orbiting;
 
-    private float _maxStaffWidth = 0.25F;
+    private float _maxStaffWidth = 0.35F;
 
     // Start is called before the first frame update
     void Awake()
@@ -475,7 +475,7 @@ public class FieldContainer : MonoBehaviour
             }
 
 
-            script.SetStaff(this._staffWidth, this._staffHeight, maxBeatButtonWidth, globalSpawnPoint, allSynthIntstruments[i], i, this._controller);
+            script.SetStaff(this._staffWidth, this._staffHeight, maxBeatButtonWidth, globalSpawnPoint, allSynthIntstruments[i], i, this._controller,this._spawnWidthCoef);
             this._playableStaffs[i] = newStaff;
         }
         for (int i = 0; i < unPlayableIntsrumentsCount; i++)

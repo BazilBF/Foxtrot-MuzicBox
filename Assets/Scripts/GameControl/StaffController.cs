@@ -86,9 +86,10 @@ public class StaffController : MonoBehaviour
     private int _staffNumber = 0;
 
     private GameController _controller;
+    private float _spawnWidthCoef;
+    private float _spawnOffset = 0.1F;
 
-    
-    
+
 
     public UnityEngine.Color[] winColors = new UnityEngine.Color[]{
                                                 new UnityEngine.Color(0.0F,0.66F,1.0F),
@@ -99,7 +100,7 @@ public class StaffController : MonoBehaviour
                                                 new UnityEngine.Color(0.3F,0.93F,0.91F)
                                             };
 
-    public void SetStaff(float inStaffWidth, float inStaffHeight, float inBeatButtonMaxWidth, Vector3 inGlobalXSpawnPosition, SynthInstrument inInstrument, int inStaffNumber, GameController inGameController) {
+    public void SetStaff(float inStaffWidth, float inStaffHeight, float inBeatButtonMaxWidth, Vector3 inGlobalXSpawnPosition, SynthInstrument inInstrument, int inStaffNumber, GameController inGameController, float inSpawnWidthCoef) {
         this._staffWidth = inStaffWidth;
         this._staffHeight = inStaffHeight;
         //Vector3 localXSpawnPosition = this.transform.InverseTransformPoint(inGlobalXSpawnPosition);
@@ -109,6 +110,7 @@ public class StaffController : MonoBehaviour
         this._demoModeFlag = this._parentScript.GetDemoMode();
         this._staffNumber = inStaffNumber;
         this._controller = inGameController;
+        this._spawnWidthCoef = inSpawnWidthCoef;
 
         this._staffCollider = this.transform.GetComponent<BoxCollider2D>();
         if (this._staffCollider != null) {
@@ -391,7 +393,7 @@ public class StaffController : MonoBehaviour
             bool trueNote = nextPuckScript.GetTrueTone() || this._demoModeFlag;
 
             bool nextPuckIsTapped = nextPuckScript.GetPlayerTapped();
-            float durationSec = nextPuckScript.GetSynthNote().GetBeat32s() * (float)this._controller.GetBeat32LentgthSec();
+            
             
 
             if (!this._demoModeFlag)
@@ -421,8 +423,11 @@ public class StaffController : MonoBehaviour
             {
                 //Debug.Log($"note true tone {trueNote}");
                 this.QueueNote(nextNote, trueNote);
+                float durationSec = nextPuckScript.GetSynthNote().GetBeat32s() * (float)this._controller.GetBeat32LentgthSec();
+                this._beatButtonScript.StartReacting(durationSec, nextPuckScript.GetPuckColor(), trueNote);
             }
-            this._beatButtonScript.StartReacting(durationSec,nextPuckScript.GetPuckColor(), trueNote);
+
+            
 
 
             this.SetNextPuckDistance(this._totalDistance, PuckIsVisible);
@@ -490,9 +495,12 @@ public class StaffController : MonoBehaviour
         if (inCurrentState == CurrentState.Playing)
         {
             this._staffCollider.enabled = true;
-            
-            this.topLeftBone.transform.localPosition = new Vector3(this._spawnPosition.x/this.staffBackground.transform.localScale.x - this._spriteOffset / 2.0F, this._spawnPosition.y / this.staffBackground.transform.localScale.y,0.0F);
-            this.topRightBone.transform.localPosition = new Vector3(this._spawnPosition.x / this.staffBackground.transform.localScale.x + this._spriteOffset / 2.0F, this._spawnPosition.y / this.staffBackground.transform.localScale.y, 0.0F); ;
+
+            float topWidth = this._spawnWidthCoef - (this._spawnWidthCoef * this._spawnOffset);
+
+
+            this.topLeftBone.transform.localPosition = new Vector3((this._spawnPosition.x/this.staffBackground.transform.localScale.x) - topWidth / 2.0F, this._spawnPosition.y / this.staffBackground.transform.localScale.y,0.0F);
+            this.topRightBone.transform.localPosition = new Vector3((this._spawnPosition.x / this.staffBackground.transform.localScale.x) + topWidth / 2.0F, this._spawnPosition.y / this.staffBackground.transform.localScale.y, 0.0F); ;
         }
         else {
             this._staffCollider.enabled = false;
