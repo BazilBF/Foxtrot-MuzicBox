@@ -39,6 +39,7 @@ TBD after publishing
   - Add possibility for players to upload own tracks, instruments, stories. In fact first two already can be done through streaming assets folder of the game, but currently adding new tracks clears player scores (done to save some time on validating changes to track JSON files)
 
 [Actual Videos]
+
 Game loop video
 https://youtu.be/1WcyEjk4AXY
 
