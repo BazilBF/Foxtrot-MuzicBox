@@ -2,11 +2,51 @@ Both PC and Android game Unity3d-based guitar hero-like game but, with a twist -
 
 Game logics scripts are located in Foxtrot-MuzicBox/Assets//Scripts
 
-Current stage of development: implementation of saving user progress and statistics and UI (this stil unstable)
+Current stage of development: freezed until 10 tracks are created
+
+[Implemented features]
+- Music
+  - game tracks are stored as JSON text files which on musical notation. Tracks could be partially converted through converter script from MusicXML (this could be exported from MuseScore). Files consists of:
+    - game level metadata, like level name, level goal, level opponent etc.
+    - track structure. Track is compiled from such part as intros, couplets, choruses, bridges, solos, outros, which could be placed in different order
+    - part settings like playable and unplayable staffs (lanes) with associated with them synth instruments. Each part can have different number of playable or unplayable staffs (lanes)
+  - All music instruments are synth instruments. Currently available "standard" and "custom synthwave" instruments. 
+    - Standard's behavior is coded, like sin, saw, click, square, click, pulse. 
+    - Custom are set with three images and JSON file (I think they need a bit more attention after unfreeze)
+- Game
+  - Tree difficulty levels, which change such game parameters field of view (how many beats ahead player see), what types of pucks are spawned (simple, bonus, invisible/auto, mines) and how they are spawned.  (Both are need to be balanced)
+  - Two level goals - "Destroy" and "Playthrough". Level continues until level goal is reach or player runs out of health. Until then track is looped between intro and outro parts
+    - Destroy - on game field there is invisible (for now) enemy. Goal to destroy enemy. Each correctly activated puck deals damage to opponent
+    - Playthrough - survive till track ends
+  - Two skills:
+    - Lullaby - track's BPM is decreased
+    - NightCore - track's BPM and pitch are increased
+
+[Roadmap]
+TBD after freeze:
+  - Add more at least 10 synth tracks
+  - Facelift of game and especially menus (bring them to gamefield style)
+  - Add player setting (at least key bidings)
+  - Add support for phones (in fact already implemented but must be tweaked and well tested)
+  - Publish somewhere
+
+TBD after publishing
+  - Add global leader board
+  - Add new skills
+  - Add albums (in fact folders)
+  - Add story mode and stories
+  - Add  new instruments
+  - Add possibility for players to upload own tracks, instruments, stories. In fact first two already can be done through streaming assets folder of the game, but currently adding new tracks clears player scores (done to save some time on validating changes to track JSON files)
 
 [Actual Videos]
+Game loop video
+https://youtu.be/1WcyEjk4AXY
 
-Game loop example: https://youtu.be/l3mRmoVUcms
+Demo for Custom SynthWave instruments (A little bit about them in next message)
+https://youtu.be/4vf4GGLuY2c
+
+Demo for different difficulty levels
+https://youtu.be/MeLuB8YMmY0
 
 Video explanation:
 - Game: gets list of all json music level files in appropriate folder in Streaming Assets and displays them in main menu. Each music level has a certain goal to destroy enemy (implemented) or play through track (TBD). 
@@ -17,39 +57,8 @@ Video explanation:
 - Game: spawn beats and prepares new parts until enemy destroyed. It cicles music parts until level goal is cleared or player run out of health. If player engage note correctly game plays true note otherwise it plays false note (except for bonus note). If player tapped on mine note, nothing played but player gets damage. After goal cleared (at "destroy" level enemy health is depleted) gamed spawns only bonus pucks and after all prepared parts are played, game loads outro.
 
 
-[Implemented features]
-- 4 simple synth instruments (see /Foxtrot-MuzicBox/Assets/Scripts/AudioGenerator):
-  - saw,
-  - sin,
-  - square,
-  - pulse
-- custom synth instruments which are set by three png images and one jscon setting file 
-- loading music from text file, text file notation is close to classic music sheet's notation but in JSON (see /Foxtrot-MuzicBox/Assets/StreamingAssets/SynthMusic/TestMusicLvL.json for example). 
-  - each music composotion supports different parts (intro, Couplet, Chorus, Solo, Bridge, Outro).
-  - each part in one composition could have several variant's
-  - each part can have several playable or unplayable intstrument tracks. different part can have different set of instruments.
-  - parts order is set in text file, depending on game mode it is planned, than parts would repeat until success or fail of mode's goal 
-- three difficulty levels
-- 2 player skills
-  - NightCore - increasing speed and pitch
-  - Lullaby - decreasing speed
-- 2 game modes
-  - duel
-  - classic playthrough 
-- various beat pucks (notes):
-  - regular
-  - mine
-  - bonus
-  - invisible(auto)
- 
-[Planned features]
-- more instruments
-- more game modes
-- story mode
-- created by players instruments and levels
-
-
 [Archived videos]
+Game loop example: https://youtu.be/l3mRmoVUcms
 -https://www.youtube.com/watch?v=vuVcF3qREP4
 -https://www.youtube.com/watch?v=6AOiqpeGaCM
 -example of fail gameplay [https://youtu.be/BXhWQPKjPS0](https://youtu.be/mY554DiK4KY)
